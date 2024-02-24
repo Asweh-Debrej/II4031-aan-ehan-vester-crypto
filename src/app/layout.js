@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import { Providers } from "./providers";
+import NavbarComponent from "./navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,9 +13,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark">
-      <body className={inter.className}>
-        <Providers>{children}</Providers>
+    <html
+      lang="en"
+      className="dark size-full">
+      <body
+        className={`size-full bg-[rgb(36,36,36)] ${inter.className}`}>
+        <Providers
+          className={"flex flex-col size-full overflow-y-auto"}>
+          <NavbarComponent />
+          {children}
+        </Providers>
       </body>
     </html>
   );
