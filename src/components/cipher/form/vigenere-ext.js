@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { Textarea, Input, Button } from "@nextui-org/react";
 
-import { encrypt, decrypt } from "@/lib/cipher/vigenere";
+import { encrypt, decrypt } from "@/lib/cipher/vigenere-ext";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
 import MissingInputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
