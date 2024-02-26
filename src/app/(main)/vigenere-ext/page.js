@@ -2,8 +2,8 @@ import VigenereExtForm from "@/components/cipher/form/vigenere-ext";
 
 
 export const metadata = {
-  title: "AVC | Vigenere Cipher",
-  description: "Vigenere cipher page",
+  title: "AVC | Extended Vigenere Cipher",
+  description: "Extended vigenere cipher page",
 };
 
 export default function VigenerePage() {

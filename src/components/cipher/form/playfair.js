@@ -4,12 +4,33 @@ import { useContext, useEffect, useState } from "react";
 
 import { Textarea, Input, Button } from "@nextui-org/react";
 
-import { encrypt, decrypt } from "@/lib/cipher/vigenere-ext";
+import { encrypt, decrypt, generateKeySquare } from "@/lib/cipher/playfair";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
 import MissingInputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
 
-export default function VigenereExtForm() {
+// render the key square below the input fields in a 5x5 grid
+const renderKeySquare = (key) => {
+  const keySquare = generateKeySquare(key);
+
+  return (
+    <table className="w-fit border-spacing-2 border-separate aspect-square">
+      <tbody>
+        {[0, 1, 2, 3, 4].map((row) => (
+          <tr key={row}>
+            {[0, 1, 2, 3, 4].map((col) => (
+              <td key={col} className="text-center rounded-md bg-gray-600 bg-opacity-20 size-[40px]">
+                {keySquare[row * 5 + col]}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default function PlayfairForm() {
   const { data, setPlainText, setCipherText, setKey } =
     useContext(CipherInputContext);
 
@@ -122,6 +143,7 @@ export default function VigenereExtForm() {
         </div>
       </form>
       <CipherError errors={errors} errorMessage={errorMessage} />
+      {renderKeySquare(data.key)}
     </div>
   );
 }
