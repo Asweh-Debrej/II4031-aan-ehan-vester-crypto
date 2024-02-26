@@ -81,7 +81,7 @@ export default function NavbarComponent({ className }) {
       ) && "text-primary font-bold"}`;
 
       return (
-        <Dropdown>
+        <Dropdown key={page.name}>
           <NavbarItem>
             <DropdownTrigger>
               <Button
