@@ -57,8 +57,6 @@ export const encrypt = (plaintext, key) => {
     newPlaintext += "X";
   }
 
-  console.log(newPlaintext);
-
   let encryptedText = "";
   const newTextLength = newPlaintext.length;
 
@@ -78,11 +76,7 @@ export const encrypt = (plaintext, key) => {
       encryptedText += keySquare[firstCharIndex.row * 5 + secondCharIndex.col];
       encryptedText += keySquare[secondCharIndex.row * 5 + firstCharIndex.col];
     }
-
-    console.log(encryptedText);
   }
-
-  console.log(encryptedText);
 
   return encryptedText;
 };
@@ -99,7 +93,6 @@ export const decrypt = (ciphertext, key) => {
   }
 
   const keySquare = generateKeySquare(key);
-  console.log(keySquare);
   let decryptedText = "";
   ciphertext = ciphertext.replace(/[^A-Z]/gi, "").toUpperCase();
   const textLength = ciphertext.length;
