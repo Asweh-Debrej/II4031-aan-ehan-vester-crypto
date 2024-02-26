@@ -6,3 +6,8 @@ export const explode = (str, length = 5) => {
 }
 
 export const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+// This allows for negative numbers to be handled properly
+export const mod = (m, n) => {
+  return ((m % n) + n) % n;
+}

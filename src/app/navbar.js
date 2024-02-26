@@ -12,6 +12,7 @@ const pages = [
   { name: "Vigenere", href: "/vigenere" },
   { name: "Vigenere Extended", href: "/vigenere-ext" },
   { name: "Playfair", href: "/playfair" },
+  { name: "Affine", href: "/affine" },
   { name: "About", href: "/about" },
 ];
 
