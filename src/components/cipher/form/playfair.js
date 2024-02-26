@@ -95,7 +95,7 @@ export default function PlayfairForm() {
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full">
       <form className="flex flex-col gap-4 items-center justify-center">
-        <div className="flex flex-row gap-4 items-center justify-center">
+        <div className="flex flex-row gap-4 items-center justify-center w-full">
           <Textarea
             label="Plaintext"
             className="w-full"
