@@ -1,4 +1,5 @@
 import MissingInputError from "../error/missing-input-error";
+import { mod } from "../utils/cipher";
 
 const removeInvalidChars = false;
 
@@ -31,8 +32,6 @@ export const encrypt = (plaintext, key) => {
   } else {
     newPlaintext = plaintext;
   }
-
-  console.log(newPlaintext);
 
   const textLength = newPlaintext.length;
   const keyLength = key.length;
@@ -99,7 +98,7 @@ export const decrypt = (ciphertext, key) => {
 
     // Precondition: invalid characters are removed if removeInvalidChars is true
     if (textCharIndex < 256) {
-      decryptedCharIndex = (textCharIndex - keyChar + 256) % 256;
+      decryptedCharIndex = mod(textCharIndex - keyChar);
     } else {
       decryptedCharIndex = textCharIndex;
     }

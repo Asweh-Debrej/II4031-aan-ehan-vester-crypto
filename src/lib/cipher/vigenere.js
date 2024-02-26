@@ -1,5 +1,5 @@
 import MissingInputError from "../error/missing-input-error";
-import { alphabet } from "../utils/cipher";
+import { alphabet, mod } from "../utils/cipher";
 
 export const encrypt = (plaintext, key) => {
   let errors = [];
@@ -62,7 +62,7 @@ export const decrypt = (ciphertext, key) => {
     const keyChar = key[i % keyLength];
     const textCharIndex = alphabet.indexOf(textChar);
     const keyCharIndex = alphabet.indexOf(keyChar);
-    let decryptedCharIndex = (textCharIndex - keyCharIndex + 26) % 26;
+    let decryptedCharIndex = mod(textCharIndex - keyCharIndex);
     decryptedText += alphabet[decryptedCharIndex];
   }
 
