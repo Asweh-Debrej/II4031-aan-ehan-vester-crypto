@@ -40,6 +40,10 @@ const pages = [
         name: "Affine",
         href: "/cipher/affine",
       },
+      {
+        name: "Vigenere Auto-Key",
+        href: "/cipher/vigenere-auto-key",
+      },
     ],
   },
   { name: "About", href: "/about" },
