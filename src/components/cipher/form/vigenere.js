@@ -8,6 +8,9 @@ import { encrypt, decrypt } from "@/lib/cipher/vigenere";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
 import MissingInputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
+import { explode } from "@/lib/utils/cipher";
+
+const explodeResult = true;
 
 export default function VigenereForm() {
   const { data, setPlainText, setCipherText, setKey } =
@@ -21,6 +24,8 @@ export default function VigenereForm() {
     if (error instanceof MissingInputError) {
       setErrors(error.errors);
       setErrorMessage(error.message);
+    } else {
+      console.error(error);
     }
   };
 
@@ -31,7 +36,11 @@ export default function VigenereForm() {
 
   const handleEncrypt = () => {
     try {
-      const ciphertext = encrypt(data.plainText, data.key);
+      let ciphertext = encrypt(data.plainText, data.key);
+
+      if (explodeResult) {
+        ciphertext = explode(ciphertext);
+      }
 
       setCipherText(ciphertext);
       setCurrentSuccess("encrypt");
@@ -39,13 +48,16 @@ export default function VigenereForm() {
     } catch (error) {
       setCipherText("");
       handleError(error);
-      resetColors();
     }
   };
 
   const handleDecrypt = () => {
     try {
-      const plaintext = decrypt(data.cipherText, data.key);
+      let plaintext = decrypt(data.cipherText, data.key);
+
+      if (explodeResult) {
+        plaintext = explode(plaintext);
+      }
 
       setPlainText(plaintext);
       setCurrentSuccess("decrypt");
@@ -53,7 +65,6 @@ export default function VigenereForm() {
     } catch (error) {
       setPlainText("");
       handleError(error);
-      resetColors();
     }
   };
 

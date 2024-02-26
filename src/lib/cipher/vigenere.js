@@ -1,4 +1,5 @@
 import MissingInputError from "../error/missing-input-error";
+import { alphabet } from "../utils/cipher";
 
 export const encrypt = (plaintext, key) => {
   let errors = [];
@@ -15,9 +16,8 @@ export const encrypt = (plaintext, key) => {
     throw new MissingInputError("Missing required input", "MissingInputError", errors);
   }
 
-  const alphabet = "abcdefghijklmnopqrstuvwxyz";
-  plaintext = plaintext.replace(/[^A-Z]/gi, "").toLowerCase();
-  key = key.toLowerCase();
+  plaintext = plaintext.replace(/[^A-Z]/gi, "").toUpperCase();
+  key = key.toUpperCase();
 
   const textLength = plaintext.length;
   const keyLength = key.length;
@@ -31,11 +31,6 @@ export const encrypt = (plaintext, key) => {
     let encryptedCharIndex = (textCharIndex + keyCharIndex) % 26;
     encryptedText += alphabet[encryptedCharIndex];
   }
-
-  encryptedText = encryptedText
-    .match(/.{1,5}/g)
-    .join(" ")
-    .toUpperCase();
 
   return encryptedText;
 };
@@ -55,9 +50,8 @@ export const decrypt = (ciphertext, key) => {
     throw new MissingInputError("Missing required input", "MissingInputError", errors);
   }
 
-  const alphabet = "abcdefghijklmnopqrstuvwxyz";
-  ciphertext = ciphertext.replace(/[^A-Z]/gi, "").toLowerCase();
-  key = key.toLowerCase();
+  ciphertext = ciphertext.replace(/[^A-Z]/gi, "").toUpperCase();
+  key = key.toUpperCase();
 
   const textLength = ciphertext.length;
   const keyLength = key.length;
@@ -71,11 +65,6 @@ export const decrypt = (ciphertext, key) => {
     let decryptedCharIndex = (textCharIndex - keyCharIndex + 26) % 26;
     decryptedText += alphabet[decryptedCharIndex];
   }
-
-  decryptedText = decryptedText
-    .match(/.{1,5}/g)
-    .join(" ")
-    .toUpperCase();
 
   return decryptedText;
 };
