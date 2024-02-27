@@ -9,6 +9,7 @@ import { CipherInputContext } from "@/lib/store/cipher-input-context";
 import MissingInputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
 import { explode } from "@/lib/utils/cipher";
+import ErrorTooltip from "@/components/cipher/error-tooltip";
 
 const explodeResult = true;
 
@@ -142,28 +143,36 @@ export default function AffineForm() {
           />
         </div>
         <div className="flex flex-row gap-4 items-center justify-center w-full">
-          <Button
-            auto
-            onClick={handleEncrypt}
-            className="w-full rounded-md bg-amber-600"
-            isDisabled={
-              data.plainText === "" ||
-              data.multiplier === "" ||
-              data.shift === ""
-            }>
-            Encrypt ==&gt;
-          </Button>
-          <Button
-            auto
-            onClick={handleDecrypt}
-            className="w-full rounded-md bg-amber-600"
-            isDisabled={
-              data.cipherText === "" ||
-              data.multiplier === "" ||
-              data.shift === ""
-            }>
-            &lt;== Decrypt
-          </Button>
+          <ErrorTooltip
+            warningTypes={["missing-plaintext", "missing-key", "missing-multiplier", "missing-shift"]}
+            className="w-full">
+            <Button
+              auto
+              onClick={handleEncrypt}
+              className="w-full rounded-md bg-amber-600"
+              isDisabled={
+                data.plainText === "" ||
+                data.multiplier === "" ||
+                data.shift === ""
+              }>
+              Encrypt ==&gt;
+            </Button>
+          </ErrorTooltip>
+          <ErrorTooltip
+            warningTypes={["missing-ciphertext", "missing-key", "missing-multiplier", "missing-shift"]}
+            className="w-full">
+            <Button
+              auto
+              onClick={handleDecrypt}
+              className="w-full rounded-md bg-amber-600"
+              isDisabled={
+                data.cipherText === "" ||
+                data.multiplier === "" ||
+                data.shift === ""
+              }>
+              &lt;== Decrypt
+            </Button>
+          </ErrorTooltip>
         </div>
       </form>
       <CipherError errors={errors} errorMessage={errorMessage} />

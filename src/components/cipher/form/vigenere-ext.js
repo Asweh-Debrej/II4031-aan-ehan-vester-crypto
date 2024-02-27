@@ -10,6 +10,7 @@ import MissingInputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
 import { base64StringToBlob, binaryStringToBlob } from "blob-util";
 import { extension } from "mime-types";
+import ErrorTooltip from "@/components/cipher/error-tooltip";
 
 const handleUpload = (fileHandler) => (e) => fileHandler(e.target.files[0]);
 
@@ -198,24 +199,28 @@ export default function VigenereExtForm() {
           errorMessage={errors.find((error) => error.field === "key")?.message}
         />
         <div className="flex flex-row gap-4 items-center justify-center w-full">
-        <Button
-            auto
-            onClick={handleEncrypt}
-            className="w-full rounded-md bg-amber-600"
-            isDisabled={
-              data.plainText === "" || data.key === ""
-            }>
-            Encrypt ==&gt;
-          </Button>
-          <Button
-            auto
-            onClick={handleDecrypt}
-            className="w-full rounded-md bg-amber-600"
-            isDisabled={
-              data.cipherText === "" || data.key === ""
-            }>
-            &lt;== Decrypt
-          </Button>
+          <ErrorTooltip
+            warningTypes={["missing-plaintext", "missing-key"]}
+            className="w-full">
+            <Button
+              auto
+              onClick={handleEncrypt}
+              className="w-full rounded-md bg-amber-600"
+              isDisabled={data.plainText === "" || data.key === ""}>
+              Encrypt ==&gt;
+            </Button>
+          </ErrorTooltip>
+          <ErrorTooltip
+            warningTypes={["missing-ciphertext", "missing-key"]}
+            className="w-full">
+            <Button
+              auto
+              onClick={handleDecrypt}
+              className="w-full rounded-md bg-amber-600"
+              isDisabled={data.cipherText === "" || data.key === ""}>
+              &lt;== Decrypt
+            </Button>
+          </ErrorTooltip>
         </div>
         <div className="flex flex-row gap-4 items-center justify-center w-full">
           <Button
