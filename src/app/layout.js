@@ -4,6 +4,8 @@ import "./globals.css";
 import { Providers } from "./providers";
 import NavbarComponent from "./navbar";
 
+import ProgressBar from "@/components/progress-bar";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -13,13 +15,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html
-      lang="en"
-      className="dark size-full">
-      <body
-        className={`size-full bg-[rgb(36,36,36)] ${inter.className}`}>
-        <Providers
-          className={"flex flex-col size-full overflow-y-auto"}>
+    <html lang="en" className="dark size-full">
+      <body className={`size-full bg-[rgb(36,36,36)] ${inter.className}`}>
+        <ProgressBar />
+        <Providers className={"flex flex-col size-full overflow-y-auto"}>
           <NavbarComponent />
           {children}
         </Providers>
