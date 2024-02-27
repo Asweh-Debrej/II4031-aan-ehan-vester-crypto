@@ -44,6 +44,10 @@ const pages = [
         name: "Vigenere Auto-Key",
         href: "/cipher/vigenere-auto-key",
       },
+      {
+        name: "Product",
+        href: "/cipher/product",
+      }
     ],
   },
   { name: "About", href: "/about" },

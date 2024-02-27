@@ -6,6 +6,7 @@ const defaultData = {
   plainText: "",
   cipherText: "",
   key: "",
+  transposeKey:1,
   multiplier: 1,
   shift: 1,
 };
@@ -15,6 +16,7 @@ let context = {
   setPlainText: () => {},
   setCipherText: () => {},
   setKey: () => {},
+  setTransposeKey: () => {},
   setMultiplier: () => {},
   setShift: () => {},
 };
@@ -25,6 +27,7 @@ export const CipherInputProvider = ({ children }) => {
   const [plainText, setPlainText] = useState("");
   const [cipherText, setCipherText] = useState("");
   const [key, setKey] = useState("");
+  const [transposeKey, setTransposeKey] = useState(1);
   const [multiplier, setMultiplier] = useState(1);
   const [shift, setShift] = useState(1);
 
@@ -33,6 +36,7 @@ export const CipherInputProvider = ({ children }) => {
     setPlainText,
     setCipherText,
     setKey,
+    setTransposeKey,
     setMultiplier,
     setShift,
   };
