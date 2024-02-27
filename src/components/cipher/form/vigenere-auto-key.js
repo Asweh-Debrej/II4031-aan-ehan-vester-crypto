@@ -124,10 +124,18 @@ export default function VigenereAutoKeyForm() {
           errorMessage={errors.find((error) => error.field === "key")?.message}
         />
         <div className="flex flex-row gap-4 items-center justify-center w-full">
-          <Button auto onClick={handleEncrypt} className="w-full rounded-md">
+          <Button
+            auto
+            onClick={handleEncrypt}
+            className="w-full rounded-md bg-amber-600"
+            isDisabled={data.plainText === "" || data.key === ""}>
             Encrypt ==&gt;
           </Button>
-          <Button auto onClick={handleDecrypt} className="w-full rounded-md">
+          <Button
+            auto
+            onClick={handleDecrypt}
+            className="w-full rounded-md bg-amber-600"
+            isDisabled={data.cipherText === "" || data.key === ""}>
             &lt;== Decrypt
           </Button>
         </div>

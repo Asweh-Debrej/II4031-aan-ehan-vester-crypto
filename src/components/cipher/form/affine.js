@@ -142,10 +142,26 @@ export default function AffineForm() {
           />
         </div>
         <div className="flex flex-row gap-4 items-center justify-center w-full">
-          <Button auto onClick={handleEncrypt} className="w-full rounded-md">
+          <Button
+            auto
+            onClick={handleEncrypt}
+            className="w-full rounded-md bg-amber-600"
+            isDisabled={
+              data.plainText === "" ||
+              data.multiplier === "" ||
+              data.shift === ""
+            }>
             Encrypt ==&gt;
           </Button>
-          <Button auto onClick={handleDecrypt} className="w-full rounded-md">
+          <Button
+            auto
+            onClick={handleDecrypt}
+            className="w-full rounded-md bg-amber-600"
+            isDisabled={
+              data.cipherText === "" ||
+              data.multiplier === "" ||
+              data.shift === ""
+            }>
             &lt;== Decrypt
           </Button>
         </div>

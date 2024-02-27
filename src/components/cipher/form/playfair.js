@@ -19,7 +19,9 @@ const renderKeySquare = (key) => {
         {[0, 1, 2, 3, 4].map((row) => (
           <tr key={row}>
             {[0, 1, 2, 3, 4].map((col) => (
-              <td key={col} className="text-center rounded-md bg-gray-600 bg-opacity-20 size-[40px]">
+              <td
+                key={col}
+                className="text-center rounded-md bg-gray-600 bg-opacity-20 size-[40px]">
                 {keySquare[row * 5 + col]}
               </td>
             ))}
@@ -134,10 +136,18 @@ export default function PlayfairForm() {
           errorMessage={errors.find((error) => error.field === "key")?.message}
         />
         <div className="flex flex-row gap-4 items-center justify-center w-full">
-          <Button auto onClick={handleEncrypt} className="w-full rounded-md">
+          <Button
+            auto
+            onClick={handleEncrypt}
+            className="w-full rounded-md bg-amber-600"
+            isDisabled={data.plainText === "" || data.key === ""}>
             Encrypt ==&gt;
           </Button>
-          <Button auto onClick={handleDecrypt} className="w-full rounded-md">
+          <Button
+            auto
+            onClick={handleDecrypt}
+            className="w-full rounded-md bg-amber-600"
+            isDisabled={data.cipherText === "" || data.key === ""}>
             &lt;== Decrypt
           </Button>
         </div>
