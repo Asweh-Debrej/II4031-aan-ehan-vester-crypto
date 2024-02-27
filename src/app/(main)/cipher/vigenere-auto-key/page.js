@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function VigenereAutoKeyPage() {
   return (
-    <div className="flex flex-col items-center justify-center gap-8 py-4">
+    <div className="flex flex-col items-center justify-center gap-8 py-4 max-w-5xl w-full">
       <h1 className="text-4xl font-bold">Vigenere Auto-Key Cipher</h1>
       <VigenereAutoKeyForm />
     </div>
