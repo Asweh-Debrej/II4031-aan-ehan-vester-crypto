@@ -62,3 +62,8 @@ T1-II4031-Kripto
 ````
 
 Algoritma ciphers terdapat pada ./src/lib/cipher
+
+## Anggota
+|   Anggota   | NIM   |
+| Muhammad Farhan Syakir   |   18221145   |
+| Rayhan Nugraha Putra   |   18221149   |
