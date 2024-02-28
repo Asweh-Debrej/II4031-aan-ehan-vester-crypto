@@ -36,9 +36,11 @@ export const encrypt = (plaintext, key) => {
     throw new MissingInputError("Missing required input", "MissingInputError", errors);
   }
 
+  plaintext = plaintext.replace(/[^A-Z]/gi, "").toUpperCase();
+  key = key.trim().replace(/[^A-Z]/gi, "").toUpperCase();
+
   const keySquare = generateKeySquare(key);
   let newPlaintext = "";
-  plaintext = plaintext.replace(/[^A-Z]/gi, "").toUpperCase();
   const textLength = plaintext.length;
 
   for (let i = 0; i < textLength; i += 2) {
@@ -92,9 +94,11 @@ export const decrypt = (ciphertext, key) => {
     throw new MissingInputError("Missing required input", "MissingInputError", errors);
   }
 
+  ciphertext = ciphertext.replace(/[^A-Z]/gi, "").toUpperCase();
+  key = key.trim().replace(/[^A-Z]/gi, "").toUpperCase();
+
   const keySquare = generateKeySquare(key);
   let decryptedText = "";
-  ciphertext = ciphertext.replace(/[^A-Z]/gi, "").toUpperCase();
   const textLength = ciphertext.length;
 
   for (let i = 0; i < textLength; i += 2) {

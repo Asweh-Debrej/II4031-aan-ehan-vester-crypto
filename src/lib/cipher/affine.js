@@ -43,6 +43,8 @@ export const encrypt = (plaintext, multiplier, shift) => {
   }
 
   plaintext = plaintext.replace(/[^A-Z]/gi, "").toUpperCase();
+  key = key.trim().replace(/[^A-Z]/gi, "").toUpperCase();
+
   multiplier = parseInt(multiplier);
   shift = parseInt(shift);
 
@@ -83,6 +85,8 @@ export const decrypt = (ciphertext, multiplier, shift) => {
   }
 
   ciphertext = ciphertext.replace(/[^A-Z]/gi, "").toUpperCase();
+  key = key.trim().replace(/[^A-Z]/gi, "").toUpperCase();
+
   multiplier = parseInt(multiplier);
   shift = parseInt(shift);
 

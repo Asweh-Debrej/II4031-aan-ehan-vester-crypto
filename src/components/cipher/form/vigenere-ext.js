@@ -1,8 +1,8 @@
 "use client";
 
-import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import { Textarea, Input, Button } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 
 import { encrypt, decrypt } from "@/lib/cipher/vigenere-ext";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
@@ -13,7 +13,7 @@ import CipherButton from "../cipher-button";
 import PlainCipherTextarea from "../plain-cipher-textarea";
 
 export default function VigenereExtForm() {
-  const { data, setPlainText, setCipherText, setKey } =
+  const { data, setPlainText, setCipherText, setKeyHandler } =
     useContext(CipherInputContext);
 
   const [errors, setErrors] = useState([]);
@@ -80,7 +80,7 @@ export default function VigenereExtForm() {
         <PlainCipherTextarea errors={errors} currentSuccess={currentSuccess} />
         <Input
           value={data.key}
-          onValueChange={setKey}
+          onValueChange={setKeyHandler({onlyAlphabet: false})}
           label="Key"
           className="w-full"
           isInvalid={

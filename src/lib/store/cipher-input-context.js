@@ -13,11 +13,15 @@ const defaultData = {
   cipherFile: "",
 };
 
+const defaultKeyHandlerOptions = {
+  onlyAlphabet: true,
+};
+
 let context = {
   data: defaultData,
   setPlainText: () => {},
   setCipherText: () => {},
-  setKey: () => {},
+  setKeyHandler: (options = defaultKeyHandlerOptions) => {},
   setTransposeKey: () => {},
   setMultiplier: () => {},
   setShift: () => {},
@@ -41,7 +45,13 @@ export const CipherInputProvider = ({ children }) => {
     data: { plainText, cipherText, key, transposeKey, multiplier, shift, plainFile, cipherFile },
     setPlainText,
     setCipherText,
-    setKey,
+    setKeyHandler: (options = defaultKeyHandlerOptions) => (key) => {
+      if (options.onlyAlphabet) {
+        setKey(key.replace(/[^a-zA-Z]/g, "").toUpperCase());
+      } else {
+        setKey(key.toUpperCase());
+      }
+    },
     setTransposeKey,
     setMultiplier,
     setShift,

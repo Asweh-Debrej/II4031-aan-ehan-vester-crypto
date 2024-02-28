@@ -2,14 +2,13 @@
 
 import { useContext, useEffect, useState } from "react";
 
-import { Textarea, Input, Button } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 
 import { encrypt, decrypt } from "@/lib/cipher/product";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
 import MissingInputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
 import { explode } from "@/lib/utils/cipher";
-import ErrorTooltip from "@/components/cipher/error-tooltip";
 import PlainCipherTextarea from "../plain-cipher-textarea";
 import CipherButton from "../cipher-button";
 import FileForm from "../file-form";
@@ -17,7 +16,7 @@ import FileForm from "../file-form";
 const explodeResult = true;
 
 export default function ProductForm() {
-  const { data, setPlainText, setCipherText, setKey, setTransposeKey } =
+  const { data, setPlainText, setCipherText, setKeyHandler, setTransposeKey } =
     useContext(CipherInputContext);
 
   const [errors, setErrors] = useState([]);
@@ -92,7 +91,7 @@ export default function ProductForm() {
         <PlainCipherTextarea errors={errors} currentSuccess={currentSuccess} />
         <Input
           value={data.key}
-          onValueChange={setKey}
+          onValueChange={setKeyHandler()}
           label="Key"
           className="w-full"
           isInvalid={

@@ -17,7 +17,7 @@ export const encrypt = (plaintext, key) => {
   }
 
   plaintext = plaintext.replace(/[^A-Z]/gi, "").toUpperCase();
-  key = key.toUpperCase();
+  key = key.trim().replace(/[^A-Z]/gi, "").toUpperCase();
 
   const textLength = plaintext.length;
   const keyLength = key.length;
@@ -51,7 +51,7 @@ export const decrypt = (ciphertext, key) => {
   }
 
   ciphertext = ciphertext.replace(/[^A-Z]/gi, "").toUpperCase();
-  key = key.toUpperCase();
+  key = key.trim().replace(/[^A-Z]/gi, "").toUpperCase();
 
   const textLength = ciphertext.length;
   const keyLength = key.length;

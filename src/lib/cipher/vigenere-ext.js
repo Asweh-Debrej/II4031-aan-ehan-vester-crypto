@@ -22,6 +22,8 @@ export const encrypt = (plaintext, key) => {
     );
   }
 
+  key = key.trim();
+
   let newPlaintext = "";
   if (removeInvalidChars) {
     for (let i = 0; i < plaintext.length; i++) {
@@ -74,6 +76,8 @@ export const decrypt = (ciphertext, key) => {
       errors
     );
   }
+
+  key = key.trim();
 
   let newCiphertext = "";
   if (removeInvalidChars) {
