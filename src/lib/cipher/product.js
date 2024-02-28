@@ -33,11 +33,10 @@ export const encrypt = (plaintext, key, transposeKey) => {
   plaintext = plaintext.replace(/[^A-Z]/gi, "").toUpperCase();
   key = key.toUpperCase();
 
-  const textLength = plaintext.length;
   const keyLength = key.length;
-  let encryptedText = "";
+  let encryptedText = plaintext;
 
-  // Function to apply the Vigenère cipher
+  //   // Function to apply the Vigenère cipher
   function vigenereCipher(input, key) {
     let result = "";
     for (let i = 0; i < input.length; i++) {
@@ -51,30 +50,36 @@ export const encrypt = (plaintext, key, transposeKey) => {
     return result;
   }
 
-  // Apply Vigenère cipher
+  //   // Apply Vigenère cipher
   encryptedText = vigenereCipher(plaintext, key);
 
-  // Function to apply the transposition cipher
-  function transpositionCipher(inputString, number) {
-    // Remove spaces and convert the input string to uppercase
-    const cleanedInput = inputString.replace(/\s/g, "").toUpperCase();
+  function addPadding(plaintext, key) {
+    let paddedLength = key - (plaintext.length % key);
+    plaintext += "X".repeat(paddedLength);
+    return plaintext;
+  }
 
-    // Calculate the number of columns based on the key
-    const numColumns = Math.ceil(cleanedInput.length / number);
+  function transpositionCipher(plaintext, key) {
+    plaintext = addPadding(plaintext, key);
+    let numRows = Math.ceil(plaintext.length / key);
+    let transposedText = "";
 
-    // Create an array of arrays to represent the columns
-    const columns = Array.from({ length: numColumns }, () => []);
-
-    // Fill the columns with characters from the input
-    for (let i = 0; i < cleanedInput.length; i++) {
-      const columnIndex = i % numColumns;
-      columns[columnIndex].push(cleanedInput[i]);
+    // Split plaintext into rows
+    let rows = [];
+    for (let i = 0; i < numRows; i++) {
+      rows.push(plaintext.substr(i * key, key));
     }
 
-    // Join the characters from each column to form the encrypted string
-    const encryptedString = columns.flat().join("");
+    // Take characters from top to bottom
+    for (let col = 0; col < key; col++) {
+      for (let row = 0; row < numRows; row++) {
+        if (col < rows[row].length) {
+          transposedText += rows[row][col];
+        }
+      }
+    }
 
-    return encryptedString;
+    return transposedText;
   }
 
   // Apply transposition cipher
@@ -114,56 +119,46 @@ export const decrypt = (ciphertext, key, transposeKey) => {
 
   key = key.toUpperCase();
 
-  const textLength = ciphertext.length;
   const keyLength = key.length;
   let decryptedText = "";
 
   // Function to apply the Vigenère cipher decryption
-  function vigenereDecipher(input, key) {
-    let result = "";
-    for (let i = 0; i < input.length; i++) {
-      const cipherChar = input[i];
-      const keyChar = key[i % keyLength];
-      const cipherCharIndex = alphabet.indexOf(cipherChar);
-      const keyCharIndex = alphabet.indexOf(keyChar);
-      let decryptedCharIndex = (cipherCharIndex - keyCharIndex + 26) % 26; // Adding 26 to handle negative values
-      result += alphabet[decryptedCharIndex];
+  //   function vigenereDecipher(input, key) {
+  //     let result = "";
+  //     for (let i = 0; i < input.length; i++) {
+  //       const cipherChar = input[i];
+  //       const keyChar = key[i % keyLength];
+  //       const cipherCharIndex = alphabet.indexOf(cipherChar);
+  //       const keyCharIndex = alphabet.indexOf(keyChar);
+  //       let decryptedCharIndex = (cipherCharIndex - keyCharIndex + 26) % 26; // Adding 26 to handle negative values
+  //       result += alphabet[decryptedCharIndex];
+  //     }
+  //     return result;
+  //   }
+
+  function transpositionDecipher(ciphertext, key) {
+    let numRows = Math.ceil(ciphertext.length / key);
+    let decryptedText = "";
+
+    // Split ciphertext into rows
+    let rows = [];
+    for (let i = 0; i < numRows; i++) {
+      rows.push(ciphertext.substr(i * key, key));
     }
-    return result;
+
+    // Take characters from left to right
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < key; col++) {
+        if (row < rows[col].length) {
+          decryptedText += rows[col][row];
+        }
+      }
+    }
+
+    return decryptedText;
   }
 
-// Apply transposition decryption
-function transpositionDecipher(inputString, number) {
-    const numColumns = Math.ceil(inputString.length / number);
-    const numRows = number; // Number of rows is equal to the transpose key
-  
-    // Calculate the number of characters needed to pad the last column
-    const paddingLength = numColumns * number - inputString.length;
-    
-    // Add padding characters if needed
-    inputString += 'X'.repeat(paddingLength); // You can use any padding character
-  
-    // Create an array to store transposed columns
-    const transposedColumns = Array.from({ length: number }, () => []);
-  
-    // Transpose the input string into columns
-    for (let i = 0; i < inputString.length; i++) {
-      const columnIndex = i % numColumns;
-      const rowIndex = Math.floor(i / numColumns);
-      transposedColumns[columnIndex][rowIndex] = inputString[i];
-    }
-  
-    // Join the transposed columns into rows to get the decrypted string
-    const decryptedString = transposedColumns.map(column => column.join('')).join('');
-  
-    return decryptedString;
-  }
-  
-  // Apply transposition decryption
   decryptedText = transpositionDecipher(ciphertext, transposeKey);
-
-  // Apply Vigenère cipher decryption
-  decryptedText = vigenereDecipher(decryptedText, key);
 
   return decryptedText;
 };
