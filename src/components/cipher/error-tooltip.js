@@ -47,6 +47,10 @@ export default function ErrorTooltip({
       predicate: () => !dataTypes.cipherFile,
       message: "Please upload the ciphertext file.",
     },
+    "missing-transpose-key": {
+      predicate: () => !dataTypes.transposeKey,
+      message: "Please enter the transpose key.",
+    },
   };
 
   const content = (

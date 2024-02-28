@@ -9,6 +9,7 @@ import { CipherInputContext } from "@/lib/store/cipher-input-context";
 import MissingInputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
 import { explode } from "@/lib/utils/cipher";
+import ErrorTooltip from "@/components/cipher/error-tooltip";
 
 const explodeResult = true;
 
@@ -84,7 +85,7 @@ export default function ProductForm() {
 
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full">
-      <form className="flex flex-col gap-4 items-center justify-center">
+      <form className="flex flex-col gap-4 items-center justify-center w-full">
         <div className="flex flex-row gap-4 items-center justify-center w-full">
           <Textarea
             label="Plaintext"
@@ -128,6 +129,7 @@ export default function ProductForm() {
           onValueChange={setTransposeKey}
           label="Transpose Key"
           className="w-full"
+          type="number"
           isInvalid={
             errors.find((error) => error.field === "transposeKey") !== undefined
           }
@@ -135,14 +137,29 @@ export default function ProductForm() {
             errors.find((error) => error.field === "transposeKey")?.message
           }
         />
-
         <div className="flex flex-row gap-4 items-center justify-center w-full">
-          <Button auto onClick={handleEncrypt} className="w-full rounded-md">
-            Encrypt ==&gt;
-          </Button>
-          <Button auto onClick={handleDecrypt} className="w-full rounded-md">
-            &lt;== Decrypt
-          </Button>
+          <ErrorTooltip
+            warningTypes={["missing-plaintext", "missing-key", "missing-transpose-key"]}
+            className="w-full">
+            <Button
+              auto
+              onClick={handleEncrypt}
+              className="w-full rounded-md bg-amber-600"
+              isDisabled={data.plainText === "" || data.key === ""}>
+              Encrypt ==&gt;
+            </Button>
+          </ErrorTooltip>
+          <ErrorTooltip
+            warningTypes={["missing-ciphertext", "missing-key", "missing-transpose-key"]}
+            className="w-full">
+            <Button
+              auto
+              onClick={handleDecrypt}
+              className="w-full rounded-md bg-amber-600 disabled:pointer-events-none"
+              isDisabled={data.cipherText === "" || data.key === ""}>
+              &lt;== Decrypt
+            </Button>
+          </ErrorTooltip>
         </div>
       </form>
       <CipherError errors={errors} errorMessage={errorMessage} />
