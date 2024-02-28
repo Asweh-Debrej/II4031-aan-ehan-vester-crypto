@@ -48,7 +48,11 @@ export const encrypt = (plaintext, key) => {
     let secondChar = plaintext[i + 1]?.toUpperCase() || "X";
 
     if (firstChar === secondChar) {
-      newPlaintext += firstChar + "X";
+      if (firstChar === "X") {
+        newPlaintext += firstChar + "Q";
+      } else {
+        newPlaintext += firstChar + "X";
+      }
       i--;
     } else {
       newPlaintext += firstChar + secondChar;
