@@ -6,7 +6,7 @@ const defaultData = {
   plainText: "",
   cipherText: "",
   key: "",
-  transposeKey:1,
+  transposeKey:"",
   multiplier: 1,
   shift: 1,
   plainFile: "",
@@ -31,14 +31,14 @@ export const CipherInputProvider = ({ children }) => {
   const [plainText, setPlainText] = useState("");
   const [cipherText, setCipherText] = useState("");
   const [key, setKey] = useState("");
-  const [transposeKey, setTransposeKey] = useState(1);
+  const [transposeKey, setTransposeKey] = useState("");
   const [multiplier, setMultiplier] = useState(1);
   const [shift, setShift] = useState(1);
   const [plainFile, setPlainFile] = useState(null);
   const [cipherFile, setCipherFile] = useState(null);
 
   context = {
-    data: { plainText, cipherText, key, multiplier, shift, plainFile, cipherFile},
+    data: { plainText, cipherText, key, transposeKey, multiplier, shift, plainFile, cipherFile },
     setPlainText,
     setCipherText,
     setKey,

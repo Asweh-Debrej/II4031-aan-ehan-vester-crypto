@@ -2,150 +2,187 @@ import MissingInputError from "../error/missing-input-error";
 import { alphabet, mod } from "../utils/cipher";
 
 export const encrypt = (plaintext, key, transposeKey) => {
-    // Define the alphabet for the Vigenère cipher
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  
-    let errors = [];
-  
-    if (!plaintext) {
-      errors.push({ field: "plaintext", message: "Plaintext is required" });
-    }
-  
-    if (!key) {
-      errors.push({ field: "key", message: "Key is required" });
-    }
-  
-    if (!transposeKey) {
-      errors.push({ field: "transposeKey", message: "Transpose key is required and must be a number" });
-    }
-  
-    if (errors.length > 0) {
-      throw new MissingInputError("Missing required input", "MissingInputError", errors);
-    }
-  
-    plaintext = plaintext.replace(/[^A-Z]/gi, "").toUpperCase();
-    key = key.toUpperCase();
-  
-    const textLength = plaintext.length;
-    const keyLength = key.length;
-    let encryptedText = "";
-  
-    // Function to apply the Vigenère cipher
-    function vigenereCipher(input, key) {
-      let result = "";
-      for (let i = 0; i < input.length; i++) {
-        const textChar = input[i];
-        const keyChar = key[i % keyLength];
-        const textCharIndex = alphabet.indexOf(textChar);
-        const keyCharIndex = alphabet.indexOf(keyChar);
-        let encryptedCharIndex = (textCharIndex + keyCharIndex) % 26;
-        result += alphabet[encryptedCharIndex];
-      }
-      return result;
-    }
-  
-    // Apply Vigenère cipher
-    encryptedText = vigenereCipher(plaintext, key);
-  
-    // Function to apply the transposition cipher
-    function transpositionCipher(inputString, number) {
-      // Remove spaces and convert the input string to uppercase
-      const cleanedInput = inputString.replace(/\s/g, '').toUpperCase();
-  
-      // Calculate the number of columns based on the key
-      const numColumns = Math.ceil(cleanedInput.length / number);
-  
-      // Create an array of arrays to represent the columns
-      const columns = Array.from({ length: numColumns }, () => []);
-  
-      // Fill the columns with characters from the input
-      for (let i = 0; i < cleanedInput.length; i++) {
-          const columnIndex = i % numColumns;
-          columns[columnIndex].push(cleanedInput[i]);
-      }
-  
-      // Join the characters from each column to form the encrypted string
-      const encryptedString = columns.flat().join('');
-  
-      return encryptedString;
-    }
-  
-    // Apply transposition cipher
-    encryptedText = transpositionCipher(encryptedText, transposeKey);
-  
-    return encryptedText;
-  };
-  
+  // Define the alphabet for the Vigenère cipher
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  export const decrypt = (ciphertext, key, transposeKey) => {
-    // Define the alphabet for the Vigenère cipher
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  
-    let errors = [];
-  
-    if (!ciphertext) {
-      errors.push({ field: "ciphertext", message: "Ciphertext is required" });
+  let errors = [];
+
+  if (!plaintext) {
+    errors.push({ field: "plaintext", message: "Plaintext is required" });
+  }
+
+  if (!key) {
+    errors.push({ field: "key", message: "Key is required" });
+  }
+
+  if (!transposeKey || isNaN(transposeKey)) {
+    errors.push({
+      field: "transposeKey",
+      message: "Transpose key is required and must be a number",
+    });
+  }
+
+  if (errors.length > 0) {
+    throw new MissingInputError(
+      "Missing required input",
+      "MissingInputError",
+      errors
+    );
+  }
+
+  plaintext = plaintext.replace(/[^A-Z]/gi, "").toUpperCase();
+  key = key.toUpperCase();
+
+  const keyLength = key.length;
+  let encryptedText = plaintext;
+
+  //   // Function to apply the Vigenère cipher
+  function vigenereCipher(input, key) {
+    let result = "";
+    for (let i = 0; i < input.length; i++) {
+      const textChar = input[i];
+      const keyChar = key[i % keyLength];
+      const textCharIndex = alphabet.indexOf(textChar);
+      const keyCharIndex = alphabet.indexOf(keyChar);
+      let encryptedCharIndex = (textCharIndex + keyCharIndex) % 26;
+      result += alphabet[encryptedCharIndex];
     }
-  
-    if (!key) {
-      errors.push({ field: "key", message: "Key is required" });
+    return result;
+  }
+
+  //   // Apply Vigenère cipher
+  encryptedText = vigenereCipher(plaintext, key);
+
+  function addPadding(plaintext, key) {
+    let paddedLength = key - (plaintext.length % key);
+    plaintext += "X".repeat(paddedLength);
+    return plaintext;
+  }
+
+  function transpositionCipher(plaintext, key) {
+    plaintext = addPadding(plaintext, key);
+    let numRows = Math.ceil(plaintext.length / key);
+    let transposedText = "";
+
+    // Split plaintext into rows
+    let rows = [];
+    for (let i = 0; i < numRows; i++) {
+      rows.push(plaintext.substr(i * key, key));
     }
-  
-    if (!transposeKey) {
-      errors.push({ field: "transposeKey", message: "Transpose key is required and must be a number" });
-    }
-  
-    if (errors.length > 0) {
-      throw new MissingInputError("Missing required input", "MissingInputError", errors);
-    }
-  
-    key = key.toUpperCase();
-  
-    const textLength = ciphertext.length;
-    const keyLength = key.length;
-    let decryptedText = "";
-  
-    // Function to apply the Vigenère cipher decryption
-    function vigenereDecipher(input, key) {
-      let result = "";
-      for (let i = 0; i < input.length; i++) {
-        const cipherChar = input[i];
-        const keyChar = key[i % keyLength];
-        const cipherCharIndex = alphabet.indexOf(cipherChar);
-        const keyCharIndex = alphabet.indexOf(keyChar);
-        let decryptedCharIndex = (cipherCharIndex - keyCharIndex + 26) % 26; // Adding 26 to handle negative values
-        result += alphabet[decryptedCharIndex];
-      }
-      return result;
-    }
-  
-    // Apply transposition decryption
-    function transpositionDecipher(inputString, number) {
-      const numColumns = Math.ceil(inputString.length / number);
-      const rows = Array.from({ length: numColumns }, () => []);
-  
-      let columnIndex = 0;
-      for (let i = 0; i < inputString.length; i++) {
-        rows[columnIndex].push(inputString[i]);
-        columnIndex = (columnIndex + 1) % numColumns;
-      }
-  
-      const transposedColumns = Array.from({ length: number }, () => []);
-      for (let i = 0; i < numColumns; i++) {
-        for (let j = 0; j < number; j++) {
-          transposedColumns[j].push(rows[i][j]);
+
+    // Take characters from top to bottom
+    for (let col = 0; col < key; col++) {
+      for (let row = 0; row < numRows; row++) {
+        if (col < rows[row].length) {
+          transposedText += rows[row][col];
         }
       }
-  
-      const decryptedString = transposedColumns.flat().join('');
-      return decryptedString;
     }
-  
-    // Apply transposition decryption
-    decryptedText = transpositionDecipher(ciphertext, transposeKey);
-  
-    // Apply Vigenère cipher decryption
-    decryptedText = vigenereDecipher(decryptedText, key);
-  
-    return decryptedText;
-  };  
+
+    return transposedText;
+  }
+
+  // Apply transposition cipher
+  encryptedText = transpositionCipher(encryptedText, transposeKey);
+
+  return encryptedText;
+};
+
+export const decrypt = (ciphertext, key, transposeKey) => {
+  // Define the alphabet for the Vigenère cipher
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  let errors = [];
+
+  if (!ciphertext) {
+    errors.push({ field: "ciphertext", message: "Ciphertext is required" });
+  }
+
+  if (!key) {
+    errors.push({ field: "key", message: "Key is required" });
+  }
+
+  if (!transposeKey || isNaN(transposeKey)) {
+    errors.push({
+      field: "transposeKey",
+      message: "Transpose key is required and must be a number",
+    });
+  }
+
+  if (errors.length > 0) {
+    throw new MissingInputError(
+      "Missing required input",
+      "MissingInputError",
+      errors
+    );
+  }
+
+  key = key.toUpperCase();
+
+  const keyLength = key.length;
+
+  function removeSpaces(inputString) {
+    return inputString.replace(/\s/g, "");
+  }
+
+  let decryptedText = removeSpaces(ciphertext);
+
+  function reverseVigenereCipher(input, key) {
+    let result = "";
+    for (let i = 0; i < input.length; i++) {
+      const textChar = input[i];
+      const keyChar = key[i % keyLength];
+      const textCharIndex = alphabet.indexOf(textChar);
+      const keyCharIndex = alphabet.indexOf(keyChar);
+      let decryptedCharIndex = (textCharIndex - keyCharIndex + 26) % 26; // Adding 26 to ensure positive modulo
+      result += alphabet[decryptedCharIndex];
+    }
+    return result;
+  }
+
+  // Reverse transposition cipher
+  function reverseTranspositionCipher(ciphertext, key) {
+    let numRows = Math.ceil(ciphertext.length / key);
+    let transposedText = "";
+
+    let cols = [];
+    let rowLengths = [];
+
+    // Determine row lengths
+    let remainingChars = ciphertext.length;
+    for (let i = 0; i < key; i++) {
+      const colLength = Math.ceil(remainingChars / (key - i));
+      rowLengths.push(colLength);
+      remainingChars -= colLength;
+    }
+
+    // Populate cols array
+    let currentIndex = 0;
+    for (let i = 0; i < key; i++) {
+      cols.push(ciphertext.substr(currentIndex, rowLengths[i]));
+      currentIndex += rowLengths[i];
+    }
+
+    // Reconstruct transposed text
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < key; col++) {
+        if (row < rowLengths[col]) {
+          transposedText += cols[col][row];
+        }
+      }
+    }
+
+    return transposedText;
+  }
+
+  // Reverse transposition cipher
+  decryptedText = reverseTranspositionCipher(decryptedText, transposeKey);
+
+  // Remove any trailing 'X' characters added during encryption padding
+  decryptedText = decryptedText.replace(/X+$/g, "");
+
+  // Reverse Vigenère cipher
+  decryptedText = reverseVigenereCipher(decryptedText, key);
+
+  return decryptedText;
+};
