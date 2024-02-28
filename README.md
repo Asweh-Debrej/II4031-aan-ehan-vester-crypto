@@ -7,23 +7,37 @@ Program ini menggunakan **Next.js**, kerangka kerja React yang memungkinkan Anda
 1. Pastikan Anda memiliki **Node.js** terinstal di komputer Anda. Jika belum, unduh dan instal dari situs resmi Node.js.
 
 2. Clone repositori ini
+
    ```bash
    git clone https://github.com/Asweh-Debrej/T1-II4031-Kripto/
+   ```
 
-4. Jalankan perintah berikut untuk menginstal dependensi:
+3. Jalankan perintah berikut untuk menginstal dependensi:
+
    ```bash
    yarn install
+   ```
 
-5. Lakukan build aplikasi
+4. Jalankan build atau development server
+
    ```bash
    yarn run build
-
-6. Jalankan aplikasi pada localhost
-   ```bash
    yarn start
+   ```
+   atau
+   ```bash
+   yarn run dev
+   ```
+
+5. Buka URL yang tertera pada terminal
+
+## Package Manager Lainnya (Pengganti Yarn)
+
+* NPM (tidak disarankan)
 
 ## Direktori Proyek
-```bash
+
+````bash
 T1-II4031-Kripto
     ├───public
     └───src
@@ -45,3 +59,6 @@ T1-II4031-Kripto
             ├───error
             ├───store
             └───utils
+````
+
+Algoritma ciphers terdapat pada ./src/lib/cipher
