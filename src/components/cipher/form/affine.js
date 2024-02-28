@@ -130,6 +130,7 @@ export default function AffineForm() {
             "missing-multiplier",
             "missing-shift",
           ]}
+          additionalRequiredFields={["multiplier", "shift"]}
         />
         <FileForm setCurrentSuccess={setCurrentSuccess} />
       </form>

@@ -125,6 +125,7 @@ export default function ProductForm() {
             "missing-key",
             "missing-transpose-key",
           ]}
+          additionalRequiredFields={["key", "transposeKey"]}
         />
         <FileForm setCurrentSuccess={setCurrentSuccess} />
       </form>
