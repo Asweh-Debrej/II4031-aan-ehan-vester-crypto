@@ -21,3 +21,27 @@ Program ini menggunakan **Next.js**, kerangka kerja React yang memungkinkan Anda
 6. Jalankan aplikasi pada localhost
    ```bash
    yarn start
+
+## Direktori Proyek
+```bash
+T1-II4031-Kripto
+    ├───public
+    └───src
+        ├───app
+        │   └───(main)
+        │       ├───cipher
+        │       │   ├───affine
+        │       │   ├───playfair
+        │       │   ├───product
+        │       │   ├───vigenere
+        │       │   ├───vigenere-auto-key
+        │       │   └───vigenere-ext
+        │       └───home
+        ├───components
+        │   └───cipher
+        │       └───form
+        └───lib
+            ├───cipher
+            ├───error
+            ├───store
+            └───utils
