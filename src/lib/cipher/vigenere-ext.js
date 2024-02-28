@@ -1,4 +1,4 @@
-import MissingInputError from "../error/missing-input-error";
+import InputError from "../error/missing-input-error";
 import { mod } from "../utils/cipher";
 
 const removeInvalidChars = false;
@@ -15,7 +15,7 @@ export const encrypt = (plaintext, key) => {
   }
 
   if (errors.length > 0) {
-    throw new MissingInputError(
+    throw new InputError(
       "Missing required input",
       "MissingInputError",
       errors
@@ -70,7 +70,7 @@ export const decrypt = (ciphertext, key) => {
   }
 
   if (errors.length > 0) {
-    throw new MissingInputError(
+    throw new InputError(
       "Missing required input",
       "MissingInputError",
       errors

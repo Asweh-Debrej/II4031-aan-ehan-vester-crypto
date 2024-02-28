@@ -1,4 +1,4 @@
-import MissingInputError from "../error/missing-input-error";
+import InputError from "../error/missing-input-error";
 import { alphabet, mod } from "../utils/cipher";
 
 // Vigenere cipher with auto key
@@ -15,7 +15,7 @@ export const encrypt = (plaintext, key) => {
   }
 
   if (errors.length > 0) {
-    throw new MissingInputError("Missing required input", "MissingInputError", errors);
+    throw new InputError("Missing required input", "MissingInputError", errors);
   }
 
   plaintext = plaintext.replace(/[^A-Z]/gi, "").toUpperCase();
@@ -49,7 +49,7 @@ export const decrypt = (ciphertext, key) => {
   }
 
   if (errors.length > 0) {
-    throw new MissingInputError("Missing required input", "MissingInputError", errors);
+    throw new InputError("Missing required input", "MissingInputError", errors);
   }
 
   ciphertext = ciphertext.replace(/[^A-Z]/gi, "").toUpperCase();

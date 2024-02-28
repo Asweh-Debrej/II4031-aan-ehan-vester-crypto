@@ -1,4 +1,4 @@
-import MissingInputError from "../error/missing-input-error";
+import InputError from "../error/missing-input-error";
 import { alphabet, mod } from "../utils/cipher";
 
 const isRelativePrime = (a, b) => {
@@ -39,7 +39,7 @@ export const encrypt = (plaintext, multiplier, shift) => {
   }
 
   if (errors.length > 0) {
-    throw new MissingInputError("Missing required input", "MissingInputError", errors);
+    throw new InputError("Missing required input", "MissingInputError", errors);
   }
 
   plaintext = plaintext.replace(/[^A-Z]/gi, "").toUpperCase();
@@ -81,7 +81,7 @@ export const decrypt = (ciphertext, multiplier, shift) => {
   }
 
   if (errors.length > 0) {
-    throw new MissingInputError("Missing required input", "MissingInputError", errors);
+    throw new InputError("Missing required input", "MissingInputError", errors);
   }
 
   ciphertext = ciphertext.replace(/[^A-Z]/gi, "").toUpperCase();

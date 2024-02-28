@@ -6,7 +6,7 @@ import { Input } from "@nextui-org/react";
 
 import { encrypt, decrypt } from "@/lib/cipher/vigenere-ext";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
-import MissingInputError from "@/lib/error/missing-input-error";
+import InputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
 import FileForm from "../file-form";
 import CipherButton from "../cipher-button";
@@ -21,7 +21,7 @@ export default function VigenereExtForm() {
   const [currentSuccess, setCurrentSuccess] = useState("");
 
   const handleError = (error) => {
-    if (error instanceof MissingInputError) {
+    if (error instanceof InputError) {
       setErrors(error.errors);
       setErrorMessage(error.message);
     } else {

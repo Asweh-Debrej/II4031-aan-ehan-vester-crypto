@@ -6,7 +6,7 @@ import { Input } from "@nextui-org/react";
 
 import { encrypt, decrypt } from "@/lib/cipher/product";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
-import MissingInputError from "@/lib/error/missing-input-error";
+import InputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
 import { explode } from "@/lib/utils/cipher";
 import PlainCipherTextarea from "../plain-cipher-textarea";
@@ -24,7 +24,7 @@ export default function ProductForm() {
   const [currentSuccess, setCurrentSuccess] = useState("");
 
   const handleError = (error) => {
-    if (error instanceof MissingInputError) {
+    if (error instanceof InputError) {
       setErrors(error.errors);
       setErrorMessage(error.message);
     } else {
