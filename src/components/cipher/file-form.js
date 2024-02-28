@@ -3,19 +3,14 @@ import { useContext, useRef } from "react";
 import { Button } from "@nextui-org/react";
 
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
-import { base64StringToBlob, binaryStringToBlob } from "blob-util";
+import { base64StringToBlob } from "blob-util";
 import { extension } from "mime-types";
 
 const handleUpload = (fileHandler) => (e) => fileHandler(e.target.files[0]);
 
 export default function FileForm({ setCurrentSuccess, raw = false }) {
-  const {
-    data,
-    setPlainText,
-    setCipherText,
-    setPlainFile,
-    setCipherFile,
-  } = useContext(CipherInputContext);
+  const { data, setPlainText, setCipherText, setPlainFile, setCipherFile } =
+    useContext(CipherInputContext);
 
   const handlePlainFile = (file) => {
     if (file) {
@@ -80,7 +75,9 @@ export default function FileForm({ setCurrentSuccess, raw = false }) {
     const blob = new Blob([brokenFile], { type: extensionType });
 
     saveCiphertextFile.current.href = URL.createObjectURL(blob);
-    saveCiphertextFile.current.download = raw ? "encrypted.AAN" : "ciphertext.txt";
+    saveCiphertextFile.current.download = raw
+      ? "encrypted.AAN"
+      : "ciphertext.txt";
     saveCiphertextFile.current.click();
   };
 
@@ -96,13 +93,13 @@ export default function FileForm({ setCurrentSuccess, raw = false }) {
           onClick={() => {
             inputPlaintextFile.current.click();
           }}
-          className="w-full rounded-md">
+          className="w-full rounded-md text-wrap">
           Upload Plaintext
         </Button>
         <Button
           auto
           onClick={handleSavePlaintext}
-          className="w-full rounded-md"
+          className="w-full rounded-md text-wrap"
           isDisabled={!data.plainText}>
           Save Plaintext
         </Button>
@@ -111,13 +108,13 @@ export default function FileForm({ setCurrentSuccess, raw = false }) {
           onClick={() => {
             inputCiphertextFile.current.click();
           }}
-          className="w-full rounded-md">
+          className="w-full rounded-md text-wrap">
           Upload Ciphertext
         </Button>
         <Button
           auto
           onClick={handleSaveCiphertext}
-          className="w-full rounded-md"
+          className="w-full rounded-md text-wrap"
           isDisabled={!data.cipherText}>
           Save Ciphertext
         </Button>
