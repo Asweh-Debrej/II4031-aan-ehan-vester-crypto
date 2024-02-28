@@ -9,6 +9,8 @@ const defaultData = {
   transposeKey:1,
   multiplier: 1,
   shift: 1,
+  plainFile: "",
+  cipherFile: "",
 };
 
 let context = {
@@ -19,6 +21,8 @@ let context = {
   setTransposeKey: () => {},
   setMultiplier: () => {},
   setShift: () => {},
+  setPlainFile: () => {},
+  setCipherFile: () => {},
 };
 
 export const CipherInputContext = createContext(context);
@@ -30,15 +34,19 @@ export const CipherInputProvider = ({ children }) => {
   const [transposeKey, setTransposeKey] = useState(1);
   const [multiplier, setMultiplier] = useState(1);
   const [shift, setShift] = useState(1);
+  const [plainFile, setPlainFile] = useState(null);
+  const [cipherFile, setCipherFile] = useState(null);
 
   context = {
-    data: { plainText, cipherText, key, multiplier, shift },
+    data: { plainText, cipherText, key, multiplier, shift, plainFile, cipherFile},
     setPlainText,
     setCipherText,
     setKey,
     setTransposeKey,
     setMultiplier,
     setShift,
+    setPlainFile,
+    setCipherFile,
   };
 
   return (

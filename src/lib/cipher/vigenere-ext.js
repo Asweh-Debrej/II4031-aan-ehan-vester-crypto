@@ -98,7 +98,7 @@ export const decrypt = (ciphertext, key) => {
 
     // Precondition: invalid characters are removed if removeInvalidChars is true
     if (textCharIndex < 256) {
-      decryptedCharIndex = mod(textCharIndex - keyChar);
+      decryptedCharIndex = mod(textCharIndex - keyChar, 256);
     } else {
       decryptedCharIndex = textCharIndex;
     }

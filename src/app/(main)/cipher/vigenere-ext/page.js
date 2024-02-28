@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function VigenerePage() {
   return (
-    <div className="flex flex-col items-center justify-center gap-8 py-4">
+    <div className="flex flex-col items-center justify-center gap-8 py-4 max-w-5xl w-full">
       <h1 className="text-4xl font-bold">Extended Vigenere Cipher</h1>
       <VigenereExtForm />
     </div>

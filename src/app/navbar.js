@@ -133,7 +133,7 @@ export default function NavbarComponent({ className }) {
       classNames={{
         wrapper: "max-w-screen-2xl md:px-8 lg:px-10 xl:px-12",
       }}>
-      <NavbarContent>{pages.map((page) => renderPage(page))}</NavbarContent>
+      <NavbarContent>{pages.map(renderPage)}</NavbarContent>
     </Navbar>
   );
 }

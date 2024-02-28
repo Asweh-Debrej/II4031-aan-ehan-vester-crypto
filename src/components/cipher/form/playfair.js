@@ -8,6 +8,7 @@ import { encrypt, decrypt, generateKeySquare } from "@/lib/cipher/playfair";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
 import MissingInputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
+import ErrorTooltip from "@/components/cipher/error-tooltip";
 
 // render the key square below the input fields in a 5x5 grid
 const renderKeySquare = (key) => {
@@ -19,7 +20,9 @@ const renderKeySquare = (key) => {
         {[0, 1, 2, 3, 4].map((row) => (
           <tr key={row}>
             {[0, 1, 2, 3, 4].map((col) => (
-              <td key={col} className="text-center rounded-md bg-gray-600 bg-opacity-20 size-[40px]">
+              <td
+                key={col}
+                className="text-center rounded-md bg-gray-600 bg-opacity-20 size-[40px]">
                 {keySquare[row * 5 + col]}
               </td>
             ))}
@@ -94,7 +97,7 @@ export default function PlayfairForm() {
 
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full">
-      <form className="flex flex-col gap-4 items-center justify-center">
+      <form className="flex flex-col gap-4 items-center justify-center w-full">
         <div className="flex flex-row gap-4 items-center justify-center w-full">
           <Textarea
             label="Plaintext"
@@ -134,12 +137,28 @@ export default function PlayfairForm() {
           errorMessage={errors.find((error) => error.field === "key")?.message}
         />
         <div className="flex flex-row gap-4 items-center justify-center w-full">
-          <Button auto onClick={handleEncrypt} className="w-full rounded-md">
-            Encrypt ==&gt;
-          </Button>
-          <Button auto onClick={handleDecrypt} className="w-full rounded-md">
-            &lt;== Decrypt
-          </Button>
+          <ErrorTooltip
+            warningTypes={["missing-plaintext", "missing-key"]}
+            className="w-full">
+            <Button
+              auto
+              onClick={handleEncrypt}
+              className="w-full rounded-md bg-amber-600"
+              isDisabled={data.plainText === "" || data.key === ""}>
+              Encrypt ==&gt;
+            </Button>
+          </ErrorTooltip>
+          <ErrorTooltip
+            warningTypes={["missing-ciphertext", "missing-key"]}
+            className="w-full">
+            <Button
+              auto
+              onClick={handleDecrypt}
+              className="w-full rounded-md bg-amber-600"
+              isDisabled={data.cipherText === "" || data.key === ""}>
+              &lt;== Decrypt
+            </Button>
+          </ErrorTooltip>
         </div>
       </form>
       <CipherError errors={errors} errorMessage={errorMessage} />

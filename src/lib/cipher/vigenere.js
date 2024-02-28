@@ -62,7 +62,7 @@ export const decrypt = (ciphertext, key) => {
     const keyChar = key[i % keyLength];
     const textCharIndex = alphabet.indexOf(textChar);
     const keyCharIndex = alphabet.indexOf(keyChar);
-    let decryptedCharIndex = mod(textCharIndex - keyCharIndex);
+    let decryptedCharIndex = mod(textCharIndex - keyCharIndex, 26);
     decryptedText += alphabet[decryptedCharIndex];
   }
 
