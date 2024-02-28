@@ -125,7 +125,7 @@ export default function ProductForm() {
         />
         <Input
           value={data.transposeKey}
-          onValueChange={(value) => setTransposeKey(parseInt(value))}
+          onValueChange={setTransposeKey}
           label="Transpose Key"
           className="w-full"
           isInvalid={
