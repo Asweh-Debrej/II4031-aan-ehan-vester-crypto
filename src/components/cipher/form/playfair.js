@@ -113,7 +113,7 @@ export default function PlayfairForm() {
             color={currentSuccess === "decrypt" ? "success" : "default"}
           />
           <Textarea
-            label="Ciphertext"
+            label="Ciphertext UTF-8"
             className="w-full"
             value={data.cipherText}
             onValueChange={setCipherText}
@@ -123,6 +123,15 @@ export default function PlayfairForm() {
             errorMessage={
               errors.find((error) => error.field === "ciphertext")?.message
             }
+            color={currentSuccess === "encrypt" ? "success" : "default"}
+          />
+          <Textarea
+            label="Ciphertext base64"
+            className="w-full"
+            value={btoa(data.cipherText)}
+            onValueChange={() => {}}
+            isInvalid={false}
+            errorMessage={""}
             color={currentSuccess === "encrypt" ? "success" : "default"}
           />
         </div>
