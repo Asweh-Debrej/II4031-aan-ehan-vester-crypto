@@ -1,8 +1,6 @@
 import InputError from "../error/missing-input-error";
 import { alphabet, mod } from "../utils/cipher";
 
-// Vigenere cipher with auto key
-
 export const encrypt = (plaintext, key) => {
   let errors = [];
 

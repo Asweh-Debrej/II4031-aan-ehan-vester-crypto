@@ -1,5 +1,4 @@
 import InputError from "../error/missing-input-error";
-import { alphabet, mod } from "../utils/cipher";
 
 export const encrypt = (plaintext, key, transposeKey) => {
   // Define the alphabet for the Vigenère cipher
