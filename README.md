@@ -6,17 +6,18 @@ Program ini menggunakan **Next.js**, kerangka kerja React yang memungkinkan Anda
 
 1. Pastikan Anda memiliki **Node.js** terinstal di komputer Anda. Jika belum, unduh dan instal dari situs resmi Node.js.
 
-2. Buka terminal dan arahkan ke direktori proyek Anda.
+2. Clone repositori ini
+   ```bash
+   git clone https://github.com/Asweh-Debrej/T1-II4031-Kripto/
 
-3. Jalankan perintah berikut untuk menginstal dependensi:
-
+4. Jalankan perintah berikut untuk menginstal dependensi:
    ```bash
    yarn install
 
-4. Lakukan build aplikasi
+5. Lakukan build aplikasi
    ```bash
    yarn run build
 
-5. Jalankan aplikasi pada localhost
+6. Jalankan aplikasi pada localhost
    ```bash
    yarn start
