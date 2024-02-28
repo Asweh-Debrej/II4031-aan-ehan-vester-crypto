@@ -120,45 +120,69 @@ export const decrypt = (ciphertext, key, transposeKey) => {
   key = key.toUpperCase();
 
   const keyLength = key.length;
-  let decryptedText = "";
 
-  // Function to apply the Vigenère cipher decryption
-  //   function vigenereDecipher(input, key) {
-  //     let result = "";
-  //     for (let i = 0; i < input.length; i++) {
-  //       const cipherChar = input[i];
-  //       const keyChar = key[i % keyLength];
-  //       const cipherCharIndex = alphabet.indexOf(cipherChar);
-  //       const keyCharIndex = alphabet.indexOf(keyChar);
-  //       let decryptedCharIndex = (cipherCharIndex - keyCharIndex + 26) % 26; // Adding 26 to handle negative values
-  //       result += alphabet[decryptedCharIndex];
-  //     }
-  //     return result;
-  //   }
+  function removeSpaces(inputString) {
+    return inputString.replace(/\s/g, "");
+  }
 
-  function transpositionDecipher(ciphertext, key) {
+  let decryptedText = removeSpaces(ciphertext);
+
+  function reverseVigenereCipher(input, key) {
+    let result = "";
+    for (let i = 0; i < input.length; i++) {
+      const textChar = input[i];
+      const keyChar = key[i % keyLength];
+      const textCharIndex = alphabet.indexOf(textChar);
+      const keyCharIndex = alphabet.indexOf(keyChar);
+      let decryptedCharIndex = (textCharIndex - keyCharIndex + 26) % 26; // Adding 26 to ensure positive modulo
+      result += alphabet[decryptedCharIndex];
+    }
+    return result;
+  }
+
+  // Reverse transposition cipher
+  function reverseTranspositionCipher(ciphertext, key) {
     let numRows = Math.ceil(ciphertext.length / key);
-    let decryptedText = "";
+    let transposedText = "";
 
-    // Split ciphertext into rows
-    let rows = [];
-    for (let i = 0; i < numRows; i++) {
-      rows.push(ciphertext.substr(i * key, key));
+    let cols = [];
+    let rowLengths = [];
+
+    // Determine row lengths
+    let remainingChars = ciphertext.length;
+    for (let i = 0; i < key; i++) {
+      const colLength = Math.ceil(remainingChars / (key - i));
+      rowLengths.push(colLength);
+      remainingChars -= colLength;
     }
 
-    // Take characters from left to right
+    // Populate cols array
+    let currentIndex = 0;
+    for (let i = 0; i < key; i++) {
+      cols.push(ciphertext.substr(currentIndex, rowLengths[i]));
+      currentIndex += rowLengths[i];
+    }
+
+    // Reconstruct transposed text
     for (let row = 0; row < numRows; row++) {
       for (let col = 0; col < key; col++) {
-        if (row < rows[col].length) {
-          decryptedText += rows[col][row];
+        if (row < rowLengths[col]) {
+          transposedText += cols[col][row];
         }
       }
     }
 
-    return decryptedText;
+    return transposedText;
   }
 
-  decryptedText = transpositionDecipher(ciphertext, transposeKey);
+  // Reverse transposition cipher
+  decryptedText = reverseTranspositionCipher(decryptedText, transposeKey);
+
+  // Remove any trailing 'X' characters added during encryption padding
+  decryptedText = decryptedText.replace(/X+$/g, "");
+
+  // Reverse Vigenère cipher
+  decryptedText = reverseVigenereCipher(decryptedText, key);
 
   return decryptedText;
 };
