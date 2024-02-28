@@ -32,7 +32,6 @@ export const encrypt = (plaintext, key) => {
     let encryptedCharIndex = (textCharIndex + keyCharIndex) % 26;
     encryptedText += alphabet[encryptedCharIndex];
     key += textChar;
-    console.log(key);
   }
 
   return encryptedText;
@@ -67,7 +66,6 @@ export const decrypt = (ciphertext, key) => {
     let decryptedCharIndex = mod(textCharIndex - keyCharIndex, 26);
     decryptedText += alphabet[decryptedCharIndex];
     key += alphabet[decryptedCharIndex];
-    console.log(key);
   }
 
   return decryptedText;

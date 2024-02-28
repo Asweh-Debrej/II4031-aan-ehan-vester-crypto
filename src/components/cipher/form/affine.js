@@ -10,6 +10,9 @@ import MissingInputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
 import { explode } from "@/lib/utils/cipher";
 import ErrorTooltip from "@/components/cipher/error-tooltip";
+import PlainCipherTextarea from "../plain-cipher-textarea";
+import CipherButton from "../cipher-button";
+import FileForm from "../file-form";
 
 const explodeResult = true;
 
@@ -86,43 +89,7 @@ export default function AffineForm() {
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full">
       <form className="flex flex-col gap-4 items-center justify-center w-full">
-        <div className="flex flex-row gap-4 items-center justify-center w-full">
-          <Textarea
-            label="Plaintext"
-            className="w-full"
-            value={data.plainText}
-            onValueChange={setPlainText}
-            isInvalid={
-              errors.find((error) => error.field === "plaintext") !== undefined
-            }
-            errorMessage={
-              errors.find((error) => error.field === "plaintext")?.message
-            }
-            color={currentSuccess === "decrypt" ? "success" : "default"}
-          />
-          <Textarea
-            label="Ciphertext UTF-8"
-            className="w-full"
-            value={data.cipherText}
-            onValueChange={setCipherText}
-            isInvalid={
-              errors.find((error) => error.field === "ciphertext") !== undefined
-            }
-            errorMessage={
-              errors.find((error) => error.field === "ciphertext")?.message
-            }
-            color={currentSuccess === "encrypt" ? "success" : "default"}
-          />
-          <Textarea
-            label="Ciphertext base64"
-            className="w-full"
-            value={btoa(data.cipherText)}
-            onValueChange={() => {}}
-            isInvalid={false}
-            errorMessage={""}
-            color={currentSuccess === "encrypt" ? "success" : "default"}
-          />
-        </div>
+        <PlainCipherTextarea errors={errors} currentSuccess={currentSuccess} />
         <div className="flex flex-row gap-4 items-center justify-center w-full">
           <Input
             value={data.multiplier}
@@ -151,38 +118,21 @@ export default function AffineForm() {
             type="number"
           />
         </div>
-        <div className="flex flex-row gap-4 items-center justify-center w-full">
-          <ErrorTooltip
-            warningTypes={["missing-plaintext", "missing-key", "missing-multiplier", "missing-shift"]}
-            className="w-full">
-            <Button
-              auto
-              onClick={handleEncrypt}
-              className="w-full rounded-md bg-amber-600"
-              isDisabled={
-                data.plainText === "" ||
-                data.multiplier === "" ||
-                data.shift === ""
-              }>
-              Encrypt ==&gt;
-            </Button>
-          </ErrorTooltip>
-          <ErrorTooltip
-            warningTypes={["missing-ciphertext", "missing-key", "missing-multiplier", "missing-shift"]}
-            className="w-full">
-            <Button
-              auto
-              onClick={handleDecrypt}
-              className="w-full rounded-md bg-amber-600"
-              isDisabled={
-                data.cipherText === "" ||
-                data.multiplier === "" ||
-                data.shift === ""
-              }>
-              &lt;== Decrypt
-            </Button>
-          </ErrorTooltip>
-        </div>
+        <CipherButton
+          onEncrypt={handleEncrypt}
+          onDecrypt={handleDecrypt}
+          encryptWarningTypes={[
+            "missing-plaintext",
+            "missing-multiplier",
+            "missing-shift",
+          ]}
+          decryptWarningTypes={[
+            "missing-ciphertext",
+            "missing-multiplier",
+            "missing-shift",
+          ]}
+        />
+        <FileForm setCurrentSuccess={setCurrentSuccess} />
       </form>
       <CipherError errors={errors} errorMessage={errorMessage} />
     </div>
