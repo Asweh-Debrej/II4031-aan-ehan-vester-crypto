@@ -3,7 +3,7 @@
 Program ini menggunakan **Next.js**, kerangka kerja React yang memungkinkan Anda membuat aplikasi web dengan mudah. Berikut adalah beberapa langkah untuk memulai:
 
 ## Link Deploy
-[label](https://t1-aan-ehan-crypto-ciphers.vercel.app/home)
+[Tucil 1 Aan dan Rayhan](https://t1-aan-ehan-crypto-ciphers.vercel.app/home)
 
 ## Instalasi
 
