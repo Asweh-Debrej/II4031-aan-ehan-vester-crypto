@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { Input } from "@nextui-org/react";
 
-import { encrypt, decrypt } from "@/lib/cipher/vigenere-ext";
+import { encrypt, decrypt } from "@/lib/cipher/rc4";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
 import InputError from "@/lib/error/input-error";
 import CipherError from "../cipher-error";
@@ -12,7 +12,7 @@ import FileForm from "../file-form";
 import CipherButton from "../cipher-button";
 import PlainCipherTextarea from "../plain-cipher-textarea";
 
-export default function VigenereExtForm() {
+export default function RC4Form() {
   const { data, setPlainText, setCipherText, setKeyHandler } =
     useContext(CipherInputContext);
 
@@ -80,7 +80,7 @@ export default function VigenereExtForm() {
         <PlainCipherTextarea errors={errors} currentSuccess={currentSuccess} />
         <Input
           value={data.key}
-          onValueChange={setKeyHandler({onlyAlphabet: false})}
+          onValueChange={setKeyHandler({ onlyAlphabet: false })}
           label="Key"
           className="w-full"
           isInvalid={

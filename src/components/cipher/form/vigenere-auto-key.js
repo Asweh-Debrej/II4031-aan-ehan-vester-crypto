@@ -6,7 +6,7 @@ import { Input } from "@nextui-org/react";
 
 import { encrypt, decrypt } from "@/lib/cipher/vigenere-auto-key";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
-import InputError from "@/lib/error/missing-input-error";
+import InputError from "@/lib/error/input-error";
 import CipherError from "../cipher-error";
 import { explode } from "@/lib/utils/cipher";
 import PlainCipherTextarea from "../plain-cipher-textarea";

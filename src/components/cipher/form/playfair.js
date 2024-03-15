@@ -6,7 +6,7 @@ import { Input } from "@nextui-org/react";
 
 import { encrypt, decrypt, generateKeySquare } from "@/lib/cipher/playfair";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
-import InputError from "@/lib/error/missing-input-error";
+import InputError from "@/lib/error/input-error";
 import CipherError from "../cipher-error";
 import PlainCipherTextarea from "../plain-cipher-textarea";
 import CipherButton from "../cipher-button";
