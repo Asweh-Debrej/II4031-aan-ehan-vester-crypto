@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { Input } from "@nextui-org/react";
 
-import { encrypt, decrypt } from "@/lib/cipher/rc4t";
+import { encrypt, decrypt } from "@/lib/cipher/rc4";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
 import InputError from "@/lib/error/missing-input-error";
 import CipherError from "../cipher-error";
