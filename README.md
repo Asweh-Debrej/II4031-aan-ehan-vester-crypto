@@ -42,6 +42,8 @@ Program ini menggunakan **Next.js**, kerangka kerja React yang memungkinkan Anda
 
 Beberapa karakter UTF-8 tidak bisa disalin ke *clipboard* sehingga penggunaan Base64 untuk *clipboard* sangat disarankan
 
+*update, sekarang keliatannya udah fixed
+
 ## Direktori Proyek
 
 ````bash
