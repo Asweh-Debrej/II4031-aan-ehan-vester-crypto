@@ -1,8 +1,6 @@
 import InputError from "../error/input-error";
 import { mod } from "../utils/cipher";
 
-const removeInvalidChars = false;
-
 function ksa(key) {
   let keyLength = key.length;
   let S = new Array(256);
@@ -39,28 +37,15 @@ function prga(S, textLength, keyLength) {
 }
 
 const encryptDecrypt = (text, key) => {
-  key = key.trim();
-
-  let newText = "";
-  if (removeInvalidChars) {
-    for (let i = 0; i < text.length; i++) {
-      if (text.charCodeAt(i) < 256) {
-        newText += text[i];
-      }
-    }
-  } else {
-    newText = text;
-  }
-
-  const textLength = newText.length;
+  const textLength = text.length;
   const keyLength = key.length;
 
   let ksaKey = ksa(key);
   let S = prga(ksaKey, textLength, keyLength);
-  // S XOR newText
+  // S XOR text
   let res = "";
   for (let i = 0; i < textLength; i++) {
-    res += String.fromCharCode(newText.charCodeAt(i) ^ S.charCodeAt(i));
+    res += String.fromCharCode(text.charCodeAt(i) ^ S.charCodeAt(i));
   }
   return res;
 };
