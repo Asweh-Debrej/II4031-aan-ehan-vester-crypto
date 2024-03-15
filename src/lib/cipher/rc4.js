@@ -35,7 +35,7 @@ function prga(S, textLength, keyLength) {
     let t = (S[i] + S[j]) % 256;
     keyStream += String.fromCharCode(S[t]);
     // extended vigenere cipher with keyLength shift
-    
+
   }
   return keyStream;
 }
@@ -79,7 +79,7 @@ export const encrypt = (plaintext, key) => {
     let ksaKey = ksa(key);
     let S = prga(ksaKey, textLength, keyLength);
     // S XOR newPlaintext
-    cipherText = "";
+    let cipherText = "";
     for (let i = 0; i < textLength; i++) {
         cipherText += String.fromCharCode(newPlaintext.charCodeAt(i) ^ S.charCodeAt(i));
     }
