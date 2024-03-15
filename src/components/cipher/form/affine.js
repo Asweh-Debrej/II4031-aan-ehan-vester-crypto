@@ -87,7 +87,7 @@ export default function AffineForm() {
 
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full">
-      <form className="flex flex-col gap-4 items-center justify-center w-full">
+      <form className="flex flex-col gap-4 items-center justify-center w-full" acceptCharset="utf-8">
         <PlainCipherTextarea errors={errors} currentSuccess={currentSuccess} />
         <div className="flex flex-row gap-4 items-center justify-center w-full">
           <Input
