@@ -1,4 +1,4 @@
-import InputError from "../error/missing-input-error";
+import InputError from "../error/input-error";
 import { alphabet, mod } from "../utils/cipher";
 
 export const encrypt = (plaintext, key) => {

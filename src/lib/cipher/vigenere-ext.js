@@ -1,4 +1,4 @@
-import InputError from "../error/missing-input-error";
+import InputError from "../error/input-error";
 import { mod } from "../utils/cipher";
 
 const removeInvalidChars = false;
