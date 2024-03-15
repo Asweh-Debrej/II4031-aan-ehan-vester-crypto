@@ -47,6 +47,10 @@ const pages = [
       {
         name: "Product",
         href: "/cipher/product",
+      },
+      {
+        name: "Modified RC4",
+        href: "/cipher/rc4",
       }
     ],
   },
