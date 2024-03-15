@@ -91,8 +91,6 @@ export default function NavbarComponent({ className }) {
               <Button
                 disableRipple
                 className={dropdownClassName}
-                radius="sm"
-                variant="light"
                 color={
                   matchingPrefix(location, page.href) ? "primary" : "foreground"
                 }
