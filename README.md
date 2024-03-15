@@ -52,7 +52,8 @@ T1-II4031-Kripto
         │       │   ├───product
         │       │   ├───vigenere
         │       │   ├───vigenere-auto-key
-        │       │   └───vigenere-ext
+        │       │   ├───vigenere-ext
+        │       │   └───rc4 <========================= new (modified rc4)
         │       └───home
         ├───components
         │   └───cipher
