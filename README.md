@@ -38,6 +38,10 @@ Program ini menggunakan **Next.js**, kerangka kerja React yang memungkinkan Anda
 
 * NPM (tidak disarankan)
 
+## CATATAN PENTING
+
+Beberapa karakter UTF-8 tidak bisa disalin ke *clipboard* sehingga penggunaan Base64 untuk *clipboard* sangat disarankan
+
 ## Direktori Proyek
 
 ````bash
