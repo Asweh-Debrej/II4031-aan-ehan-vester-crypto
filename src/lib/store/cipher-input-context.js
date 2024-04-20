@@ -13,6 +13,7 @@ const defaultData = {
   shift: 1,
   plainFile: "",
   cipherFile: "",
+  rsa: { left: { p: "", q: "", recievedPublicKey: "", keys: { publicKey: { e: "", n: "" }, privateKey: { d: "", n: "" } } }, right: { p: "", q: "", generatedPrivateKey: "", generatedPublicKey: "", recievedPublicKey: "" } },
 };
 
 const defaultKeyHandlerOptions = {
@@ -31,6 +32,10 @@ let context = {
   setShift: () => {},
   setPlainFile: () => {},
   setCipherFile: () => {},
+  rsa: {
+    left: { setP: () => {}, setQ: () => {}, setRecievedPublicKey: () => {}, keys: { publicKey: { setE: () => {}, setN: () => {} }, privateKey: { setD: () => {}, setN: () => {} } } },
+    right: { setP: () => {}, setQ: () => {}, setGeneratedPrivateKey: () => {}, setGeneratedPublicKey: () => {}, setRecievedPublicKey: () => {} },
+  },
 };
 
 export const CipherInputContext = createContext(context);
@@ -46,7 +51,14 @@ export const CipherInputProvider = ({ children }) => {
   const [shift, setShift] = useState(1);
   const [plainFile, setPlainFile] = useState(null);
   const [cipherFile, setCipherFile] = useState(null);
-
+  const [p, setP] = useState(0);
+  const [q, setQ] = useState(0);
+  const [generatedPrivateKey, setGeneratedPrivateKey] = useState("");
+  const [generatedPublicKey, setGeneratedPublicKey] = useState("");
+  const [e, setE] = useState("");
+  const [d, setD] = useState("");
+  const [n, setN] = useState("");
+  const [recievedPublicKey, setRecievedPublicKey] = useState("");
   context = {
     data: {
       plainText,
@@ -59,6 +71,7 @@ export const CipherInputProvider = ({ children }) => {
       shift,
       plainFile,
       cipherFile,
+      rsa: { left: { p, q, recievedPublicKey, keys: { publicKey: { e, n }, privateKey: { d, n } } }, right: { p, q, generatedPrivateKey, generatedPublicKey, recievedPublicKey } },
     },
     setPlainText: (text) => {
       setPlainText(text);
@@ -96,11 +109,11 @@ export const CipherInputProvider = ({ children }) => {
     setShift,
     setPlainFile,
     setCipherFile,
+    rsa: {
+      left: { setP, setQ, setRecievedPublicKey, keys: { publicKey: { setE, setN }, privateKey: { setD, setN } } },
+      right: { setP, setQ, setGeneratedPrivateKey, setGeneratedPublicKey, setRecievedPublicKey },
+    },
   };
 
-  return (
-    <CipherInputContext.Provider value={context}>
-      {children}
-    </CipherInputContext.Provider>
-  );
+  return <CipherInputContext.Provider value={context}>{children}</CipherInputContext.Provider>;
 };

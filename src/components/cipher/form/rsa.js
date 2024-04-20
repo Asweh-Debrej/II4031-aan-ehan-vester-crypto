@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { Input, Divider, Button } from "@nextui-org/react";
 
-import { encrypt, decrypt } from "@/lib/cipher/rsa";
+import { generateKeys, encrypt, decrypt } from "@/lib/cipher/rsa";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
 import InputError from "@/lib/error/input-error";
 import CipherError from "../cipher-error";
@@ -16,9 +16,7 @@ import FileForm from "../file-form";
 const explodeResult = true;
 
 export default function RSAForm() {
-  const { data, setPlainText, setCipherText, setKeyHandler } =
-    useContext(CipherInputContext);
-
+  const { data, setPlainText, setCipherText, setKeyHandler, setP, setQ } = useContext(CipherInputContext);
   const [errors, setErrors] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [currentSuccess, setCurrentSuccess] = useState("");
@@ -71,57 +69,44 @@ export default function RSAForm() {
     }
   };
 
+  const handleGenerateKey = () => {
+    try {
+      let generatedKeys = generateKeys(data.rsa.left.p, data.rsa.left.q);
+
+      setKeys(generatedKeys);
+      //setPlainText(plaintext);
+      setCurrentSuccess("generate key");
+      clearErrors();
+    } catch (error) {
+      //setPlainText("");
+      handleError(error);
+    }
+  };
+
   const person = (
     <div className="flex flex-col gap-4 items-center justify-center w-full">
       <p className="text-2xl font-bold">Alice</p>
       <div className="flex flex-row gap-4 items-center justify-center w-full">
-        <Input
-          label="p"
-          value={data.key}
-          onChange={(e) => setKeyHandler(e.target.value)}
-          placeholder="p"
-          width="100%"
-          required
-        />
-        <Input
-          label="q"
-          value={data.key}
-          onChange={(e) => setKeyHandler(e.target.value)}
-          placeholder="q"
-          width="100%"
-          required
-        />
+        <Input label="p" value={data.rsa.left.p} onChange={(e) => rsa.left.setP(e.target.value)} placeholder="p" width="100%" required />
+        <Input label="q" value={data.rsa.left.q} onChange={(e) => setQ(e.target.value)} placeholder="q" width="100%" required />
       </div>
-      <Button auto onClick={() => {}} className="w-full">
+      <Button
+        auto
+        onClick={() => {
+          handleGenerateKey;
+        }}
+        className="w-full"
+      >
         Generate Key
       </Button>
-      <Input
-        label="Generated Private Key"
-        value={data.key}
-        onChange={(e) => setKeyHandler(e.target.value)}
-        placeholder="Generated Public Key"
-        width="100%"
-        isReadOnly
-      />
-      <Input
-        label="Generated Private Key"
-        value={data.key}
-        onChange={(e) => setKeyHandler(e.target.value)}
-        placeholder="Generated Public Key"
-        width="100%"
-        isReadOnly
-      />
+      <div>{data.rsa.left.keys.privateKey}</div>
+      <div>{data.rsa.left.p}</div>
+      <Input label="Generated Private Key" value={data.key} onChange={(e) => setKeyHandler(e.target.value)} placeholder="Generated Private Key" width="100%" isReadOnly />
+      <Input label="Generated Public Key" value={data.key} onChange={(e) => setKeyHandler(e.target.value)} placeholder="Generated Public Key" width="100%" isReadOnly />
       <Button auto onClick={() => {}} className="w-full">
         Send Public Key
       </Button>
-      <Input
-        label="Received Public Key"
-        value={data.key}
-        onChange={(e) => setKeyHandler(e.target.value)}
-        placeholder="Received Public Key"
-        width="100%"
-        isReadOnly
-      />
+      <Input label="Received Public Key" value={data.key} onChange={(e) => setKeyHandler(e.target.value)} placeholder="Received Public Key" width="100%" isReadOnly />
     </div>
   );
 

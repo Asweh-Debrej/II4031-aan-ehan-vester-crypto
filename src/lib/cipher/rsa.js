@@ -1,7 +1,7 @@
 import InputError from "../error/input-error";
 import { mod, modInverse, phi, gcd, isPrime } from "../utils/cipher";
 
-const generateKeys = (p, q) => {
+export const generateKeys = (p, q) => {
   let errors = [];
 
   if (!p) {
@@ -31,7 +31,7 @@ const generateKeys = (p, q) => {
   }
   const d = modInverse(e, phiN);
   return { publicKey: { e, n }, privateKey: { d, n } };
-}
+};
 
 export const encrypt = (plaintext, publicKey) => {
   let errors = [];
@@ -56,7 +56,7 @@ export const encrypt = (plaintext, publicKey) => {
     encryptedText += String.fromCharCode(encryptedCharCode);
   }
   return encryptedText;
-}
+};
 
 export const decrypt = (ciphertext, privateKey) => {
   let errors = [];
@@ -81,4 +81,4 @@ export const decrypt = (ciphertext, privateKey) => {
     decryptedText += String.fromCharCode(decryptedCharCode);
   }
   return decryptedText;
-}
+};

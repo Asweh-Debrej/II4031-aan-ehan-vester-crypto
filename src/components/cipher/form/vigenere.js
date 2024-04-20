@@ -16,8 +16,7 @@ import FileForm from "../file-form";
 const explodeResult = true;
 
 export default function VigenereForm() {
-  const { data, setPlainText, setCipherText, setKeyHandler } =
-    useContext(CipherInputContext);
+  const { data, setPlainText, setCipherText, setKeyHandler } = useContext(CipherInputContext);
 
   const [errors, setErrors] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -89,22 +88,8 @@ export default function VigenereForm() {
     <div className="flex flex-col gap-4 items-center justify-center w-full">
       <form className="flex flex-col gap-4 items-center justify-center w-full" acceptCharset="utf-8">
         <PlainCipherTextarea errors={errors} currentSuccess={currentSuccess} />
-        <Input
-          value={data.key}
-          onValueChange={setKeyHandler()}
-          label="Key"
-          className="w-full"
-          isInvalid={
-            errors.find((error) => error.field === "key") !== undefined
-          }
-          errorMessage={errors.find((error) => error.field === "key")?.message}
-        />
-        <CipherButton
-          onEncrypt={handleEncrypt}
-          onDecrypt={handleDecrypt}
-          encryptWarningTypes={["missing-plaintext", "missing-key"]}
-          decryptWarningTypes={["missing-ciphertext", "missing-key"]}
-        />
+        <Input value={data.key} onValueChange={setKeyHandler()} label="Key" className="w-full" isInvalid={errors.find((error) => error.field === "key") !== undefined} errorMessage={errors.find((error) => error.field === "key")?.message} />
+        <CipherButton onEncrypt={handleEncrypt} onDecrypt={handleDecrypt} encryptWarningTypes={["missing-plaintext", "missing-key"]} decryptWarningTypes={["missing-ciphertext", "missing-key"]} />
         <FileForm setCurrentSuccess={setCurrentSuccess} />
       </form>
       <CipherError errors={errors} errorMessage={errorMessage} />
