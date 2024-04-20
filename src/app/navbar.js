@@ -51,7 +51,11 @@ const pages = [
       {
         name: "Modified RC4",
         href: "/cipher/rc4",
-      }
+      },
+      {
+        name: "RSA",
+        href: "/cipher/rsa",
+      },
     ],
   },
   { name: "About", href: "/about" },
