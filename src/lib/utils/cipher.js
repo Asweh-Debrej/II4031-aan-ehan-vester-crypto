@@ -34,6 +34,30 @@ export const gcd = (a, b) => {
 };
 
 export const isPrime = (num) => {
-  for (let i = 2; i < num; i++) if (num % i === 0) return false;
-  return num > 1;
+  if (num <= 1) {
+    return false;
+  }
+
+  const bigNum = BigInt(num);
+  const s = Math.sqrt(num);
+  let y = 0;
+  for (let i = 2; i <= s; i++) {
+    if (bigNum % BigInt(i) === 0) {
+
+      console.log("y", y);
+      console.log("s", s);
+      console.log("i", BigInt(i));
+      console.log("num", num);
+      console.log("num % i", num % BigInt(i));
+      console.log("num/i", (num/BigInt(i)).toLocaleString());
+      console.log("x/2", (170141183460469231731687303715884105727/2).toLocaleString());
+      return false;
+    }
+    y++
+  }
+
+  console.log(y);
+  console.log(s);
+
+  return true;
 }

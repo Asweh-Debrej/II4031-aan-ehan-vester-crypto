@@ -1,6 +1,24 @@
 "use client";
 
-import { createContext, useState } from "react";
+import { createContext, useState, useReducer } from "react";
+import update from "immutability-helper";
+
+const defaultRSAData = {
+  p: 1,
+  q: 1,
+  generatedPrivateKey: {
+    d: undefined,
+    n: undefined,
+  },
+  generatedPublicKey: {
+    e: undefined,
+    n: undefined,
+  },
+  recievedPublicKey: {
+    e: undefined,
+    n: undefined,
+  },
+};
 
 const defaultData = {
   plainText: "",
@@ -11,9 +29,13 @@ const defaultData = {
   transposeKey: "",
   multiplier: 1,
   shift: 1,
-  plainFile: "",
-  cipherFile: "",
-  rsa: { left: { p: "", q: "", recievedPublicKey: "", keys: { publicKey: { e: "", n: "" }, privateKey: { d: "", n: "" } } }, right: { p: "", q: "", generatedPrivateKey: "", generatedPublicKey: "", recievedPublicKey: "" } },
+  plainFile: null,
+  cipherFile: null,
+  rsa: {
+    left: defaultRSAData,
+    right: defaultRSAData,
+  },
+  chat: {},
 };
 
 const defaultKeyHandlerOptions = {
@@ -32,33 +54,81 @@ let context = {
   setShift: () => {},
   setPlainFile: () => {},
   setCipherFile: () => {},
-  rsa: {
-    left: { setP: () => {}, setQ: () => {}, setRecievedPublicKey: () => {}, keys: { publicKey: { setE: () => {}, setN: () => {} }, privateKey: { setD: () => {}, setN: () => {} } } },
-    right: { setP: () => {}, setQ: () => {}, setGeneratedPrivateKey: () => {}, setGeneratedPublicKey: () => {}, setRecievedPublicKey: () => {} },
-  },
+  setRSAP: (object, p) => {},
+  setRSAQ: (object, q) => {},
+  setRSAGeneratedKeys: (object, keys) => {},
+  setRSARecievedPublicKey: (object, key) => {},
+  pushMessage: (sender, receiver, message) => {},
+  setChatDecrypted: (id, decrypted) => {},
+  revertChat: (id) => {},
 };
+
+let chatLength = 0;
+
+function chatReducer(state, action) {
+  switch (action.type) {
+    case "pushMessage":
+      const id = ++chatLength;
+      const newPayload = {
+        id,
+        sender: action.sender,
+        receiver: action.receiver,
+        decrypted: "",
+        original: action.message,
+        status: "original",
+      };
+
+      const newState = {
+        ...state,
+        [id]: newPayload,
+      };
+      return newState;
+
+    case "setDecrypted":
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          decrypted: action.decrypted,
+          status: "decrypted",
+        },
+      };
+
+    case "revert":
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          status: "original",
+        },
+      };
+
+    default:
+      return state;
+  }
+}
 
 export const CipherInputContext = createContext(context);
 
 export const CipherInputProvider = ({ children }) => {
-  const [plainText, setPlainText] = useState("");
-  const [cipherText, setCipherText] = useState("");
-  const [plainTextBase64, setPlainTextBase64] = useState("");
-  const [cipherTextBase64, setCipherTextBase64] = useState("");
-  const [key, setKey] = useState("");
-  const [transposeKey, setTransposeKey] = useState("");
-  const [multiplier, setMultiplier] = useState(1);
-  const [shift, setShift] = useState(1);
-  const [plainFile, setPlainFile] = useState(null);
-  const [cipherFile, setCipherFile] = useState(null);
-  const [p, setP] = useState(0);
-  const [q, setQ] = useState(0);
-  const [generatedPrivateKey, setGeneratedPrivateKey] = useState("");
-  const [generatedPublicKey, setGeneratedPublicKey] = useState("");
-  const [e, setE] = useState("");
-  const [d, setD] = useState("");
-  const [n, setN] = useState("");
-  const [recievedPublicKey, setRecievedPublicKey] = useState("");
+  const [plainText, setPlainText] = useState(defaultData.plainText);
+  const [cipherText, setCipherText] = useState(defaultData.cipherText);
+  const [plainTextBase64, setPlainTextBase64] = useState(
+    defaultData.plainTextBase64
+  );
+  const [cipherTextBase64, setCipherTextBase64] = useState(
+    defaultData.cipherTextBase64
+  );
+  const [key, setKey] = useState(defaultData.key);
+  const [transposeKey, setTransposeKey] = useState(defaultData.transposeKey);
+  const [multiplier, setMultiplier] = useState(defaultData.multiplier);
+  const [shift, setShift] = useState(defaultData.shift);
+  const [plainFile, setPlainFile] = useState(defaultData.plainFile);
+  const [cipherFile, setCipherFile] = useState(defaultData.cipherFile);
+  const [rsa, setRSA] = useState(defaultData.rsa);
+
+  const [chat, dispatchChat] = useReducer(chatReducer, defaultData.chat);
+
   context = {
     data: {
       plainText,
@@ -71,7 +141,8 @@ export const CipherInputProvider = ({ children }) => {
       shift,
       plainFile,
       cipherFile,
-      rsa: { left: { p, q, recievedPublicKey, keys: { publicKey: { e, n }, privateKey: { d, n } } }, right: { p, q, generatedPrivateKey, generatedPublicKey, recievedPublicKey } },
+      rsa,
+      chat,
     },
     setPlainText: (text) => {
       setPlainText(text);
@@ -109,11 +180,41 @@ export const CipherInputProvider = ({ children }) => {
     setShift,
     setPlainFile,
     setCipherFile,
-    rsa: {
-      left: { setP, setQ, setRecievedPublicKey, keys: { publicKey: { setE, setN }, privateKey: { setD, setN } } },
-      right: { setP, setQ, setGeneratedPrivateKey, setGeneratedPublicKey, setRecievedPublicKey },
+    setRSAP: (object, p) => {
+      // setRSA(update(rsa, { [object]: { p: { $set: p } } }));
+      const newRSA = { ...rsa, [object]: { ...rsa[object], p: p } };
+      setRSA(newRSA);
+    },
+    setRSAQ: (object, q) => {
+      setRSA(update(rsa, { [object]: { q: { $set: q } } }));
+    },
+    setRSAGeneratedKeys: (object, keys) => {
+      setRSA(
+        update(rsa, {
+          [object]: {
+            generatedPrivateKey: { $set: keys.privateKey },
+            generatedPublicKey: { $set: keys.publicKey },
+          },
+        })
+      );
+    },
+    setRSARecievedPublicKey: (object, key) => {
+      setRSA(update(rsa, { [object]: { recievedPublicKey: { $set: key } } }));
+    },
+    pushMessage: (sender, receiver, message) => {
+      dispatchChat({ type: "pushMessage", sender, receiver, message });
+    },
+    setChatDecrypted: (id, decrypted) => {
+      dispatchChat({ type: "setDecrypted", id, decrypted });
+    },
+    revertChat: (id) => {
+      dispatchChat({ type: "revert", id });
     },
   };
 
-  return <CipherInputContext.Provider value={context}>{children}</CipherInputContext.Provider>;
+  return (
+    <CipherInputContext.Provider value={context}>
+      {children}
+    </CipherInputContext.Provider>
+  );
 };
