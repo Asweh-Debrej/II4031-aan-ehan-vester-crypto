@@ -153,15 +153,15 @@ const MessageInput = ({ object }) => {
         value={message}
         onValueChange={setMessage}
         placeholder="Message"
-        width="100%"
       />
       <Button
         auto
         onClick={handleSendMessage}
-        className="w-full"
         isDisabled={
           message === "" || data.rsa[object].recievedPublicKey.e === undefined
-        }>
+        }
+        color="warning"
+        >
         Send
       </Button>
     </div>
@@ -179,7 +179,7 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
     try {
       setChatDecrypted(
         id,
-        decrypt(original, data.rsa[sender].generatedPrivateKey)
+        decrypt(original, data.rsa[receiver].generatedPrivateKey)
       );
       clearErrors();
     } catch (error) {
@@ -205,7 +205,9 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
             {status === "decrypted" ? decrypted : original}
           </p>
         </div>
-        <div className="flex flex-row gap-3 items-center justify-end w-full">
+        <div className={`flex flex-row gap-3 items-center ${
+            sender === "left" ? "justify-start" : "justify-end"
+          } w-full`}>
           {status === "original" ? (
             <button
               className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
@@ -246,40 +248,6 @@ export default function RSAForm() {
   const clearErrors = () => {
     setErrors([]);
     setErrorMessage("");
-  };
-
-  const handleEncrypt = () => {
-    try {
-      let ciphertext = encrypt(data.plainText, data.key);
-
-      if (explodeResult) {
-        ciphertext = explode(ciphertext);
-      }
-
-      setCipherText(ciphertext);
-      setCurrentSuccess("encrypt");
-      clearErrors();
-    } catch (error) {
-      setCipherText("");
-      handleError(error);
-    }
-  };
-
-  const handleDecrypt = () => {
-    try {
-      let plaintext = decrypt(data.cipherText, data.key);
-
-      if (explodeResult) {
-        plaintext = explode(plaintext);
-      }
-
-      setPlainText(plaintext);
-      setCurrentSuccess("decrypt");
-      clearErrors();
-    } catch (error) {
-      setPlainText("");
-      handleError(error);
-    }
   };
 
   const handleGenerateKey = (object) => {

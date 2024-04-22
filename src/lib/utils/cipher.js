@@ -43,14 +43,6 @@ export const isPrime = (num) => {
   let y = 0;
   for (let i = 2; i <= s; i++) {
     if (bigNum % BigInt(i) === 0) {
-
-      console.log("y", y);
-      console.log("s", s);
-      console.log("i", BigInt(i));
-      console.log("num", num);
-      console.log("num % i", num % BigInt(i));
-      console.log("num/i", (num/BigInt(i)).toLocaleString());
-      console.log("x/2", (170141183460469231731687303715884105727/2).toLocaleString());
       return false;
     }
     y++
@@ -60,4 +52,14 @@ export const isPrime = (num) => {
   console.log(s);
 
   return true;
+}
+
+export const modPow = (base, exp, mod) => {
+  if (exp == 0) {
+    return 1;
+  }
+  if (exp % 2 == 0) {
+    return modPow((base * base) % mod, exp / 2, mod);
+  }
+  return (base * modPow(base, exp - 1, mod)) % mod;
 }
