@@ -12,7 +12,7 @@ Program ini menggunakan **Next.js**, kerangka kerja React yang memungkinkan Anda
 2. Clone repositori ini
 
    ```bash
-   git clone https://github.com/Asweh-Debrej/T1-II4031-Kripto/
+   git clone [https://github.com/Asweh-Debrej/T1-II4031-Kripto/](https://github.com/Asweh-Debrej/II4031-aan-vester-crypto.git)
    ```
 
 3. Jalankan perintah berikut untuk menginstal dependensi:
