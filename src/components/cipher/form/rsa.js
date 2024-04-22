@@ -8,6 +8,7 @@ import { generateKeys, encrypt, decrypt } from "@/lib/cipher/rsa";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
 import InputError from "@/lib/error/input-error";
 import CipherError from "../cipher-error";
+import ErrorTooltip from "../error-tooltip";
 import { explode } from "@/lib/utils/cipher";
 import PlainCipherTextarea from "../plain-cipher-textarea";
 import CipherButton from "../cipher-button";
@@ -26,7 +27,12 @@ const persons = {
   right: "Bob",
 };
 
-const Person = ({ object, handleGenerateKey, sendPublicKeyHandler, errors }) => {
+const Person = ({
+  object,
+  handleGenerateKey,
+  sendPublicKeyHandler,
+  errors,
+}) => {
   const { data, setRSAP, setRSAQ } = useContext(CipherInputContext);
 
   const saveKeyRef = useRef();
@@ -35,7 +41,8 @@ const Person = ({ object, handleGenerateKey, sendPublicKeyHandler, errors }) => 
     const blob = new Blob([JSON.stringify(key)], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     saveKeyRef.current.href = url;
-    saveKeyRef.current.download = type === "private" ? "private-key.pri" : "public-key.pub";
+    saveKeyRef.current.download =
+      type === "private" ? "private-key.pri" : "public-key.pub";
     saveKeyRef.current.click();
   };
 
@@ -50,8 +57,12 @@ const Person = ({ object, handleGenerateKey, sendPublicKeyHandler, errors }) => 
           placeholder="p"
           required
           type="number"
-          isInvalid={errors.find((error) => error.field === `${object}.p`) !== undefined}
-          errorMessage={errors.find((error) => error.field === `${object}.p`)?.message}
+          isInvalid={
+            errors.find((error) => error.field === `${object}.p`) !== undefined
+          }
+          errorMessage={
+            errors.find((error) => error.field === `${object}.p`)?.message
+          }
         />
         <Input
           label="q"
@@ -60,8 +71,12 @@ const Person = ({ object, handleGenerateKey, sendPublicKeyHandler, errors }) => 
           placeholder="q"
           required
           type="number"
-          isInvalid={errors.find((error) => error.field === `${object}.q`) !== undefined}
-          errorMessage={errors.find((error) => error.field === `${object}.q`)?.message}
+          isInvalid={
+            errors.find((error) => error.field === `${object}.q`) !== undefined
+          }
+          errorMessage={
+            errors.find((error) => error.field === `${object}.q`)?.message
+          }
         />
       </div>
       <Button
@@ -70,65 +85,114 @@ const Person = ({ object, handleGenerateKey, sendPublicKeyHandler, errors }) => 
           handleGenerateKey(object);
         }}
         className="w-full"
-        color="warning"
-      >
+        color="warning">
         Generate Key
       </Button>
       <div className="flex flex-col gap-1 items-start justify-center w-full">
         <p className="text-sm">Generated Private Key</p>
         <div className="flex flex-row gap-4 items-center justify-center w-full">
-          <Input label="d" value={data.rsa[object].generatedPrivateKey.d} placeholder="d" isReadOnly isDisabled={data.rsa[object].generatedPrivateKey.d === undefined} />
-          <Input label="n" value={data.rsa[object].generatedPrivateKey.n} placeholder="n" isReadOnly isDisabled={data.rsa[object].generatedPrivateKey.n === undefined} />
+          <Input
+            label="d"
+            value={data.rsa[object].generatedPrivateKey.d}
+            placeholder="d"
+            isReadOnly
+            isDisabled={data.rsa[object].generatedPrivateKey.d === undefined}
+          />
+          <Input
+            label="n"
+            value={data.rsa[object].generatedPrivateKey.n}
+            placeholder="n"
+            isReadOnly
+            isDisabled={data.rsa[object].generatedPrivateKey.n === undefined}
+          />
         </div>
       </div>
       <div className="flex flex-col gap-1 items-start justify-center w-full">
         <p className="text-sm">Generated Public Key</p>
         <div className="flex flex-row gap-4 items-center justify-center w-full">
-          <Input label="e" value={data.rsa[object].generatedPublicKey.e} placeholder="e" isReadOnly isDisabled={data.rsa[object].generatedPublicKey.e === undefined} />
-          <Input label="n" value={data.rsa[object].generatedPublicKey.n} placeholder="n" isReadOnly isDisabled={data.rsa[object].generatedPublicKey.n === undefined} />
+          <Input
+            label="e"
+            value={data.rsa[object].generatedPublicKey.e}
+            placeholder="e"
+            isReadOnly
+            isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
+          />
+          <Input
+            label="n"
+            value={data.rsa[object].generatedPublicKey.n}
+            placeholder="n"
+            isReadOnly
+            isDisabled={data.rsa[object].generatedPublicKey.n === undefined}
+          />
           <a ref={saveKeyRef} className="hidden" download />
         </div>
       </div>
       <div className="flex flex-row gap-4 items-center justify-center w-full">
-        <Button
-          auto
-          onClick={() => {
-            handleSaveKey(data.rsa[object].generatedPrivateKey, "private");
-          }}
+        <ErrorTooltip
+          warningTypes={["missing-rsa-public-key"]}
           className="w-full"
-          isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
-          color="success"
-        >
-          Save Private Key
-        </Button>
-        <Button
-          auto
-          onClick={() => {
-            handleSaveKey(data.rsa[object].generatedPublicKey, "public");
-          }}
+          data={data.rsa[object].generatedPublicKey}>
+          <Button
+            auto
+            onClick={() => {
+              handleSaveKey(data.rsa[object].generatedPrivateKey, "private");
+            }}
+            className="w-full"
+            isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
+            color="success">
+            Save Private Key
+          </Button>
+        </ErrorTooltip>
+        <ErrorTooltip
+          warningTypes={["missing-rsa-public-key"]}
           className="w-full"
-          isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
-          color="success"
-        >
-          Save Public Key
-        </Button>
+          data={data.rsa[object].generatedPublicKey}>
+          <Button
+            auto
+            onClick={() => {
+              handleSaveKey(data.rsa[object].generatedPublicKey, "public");
+            }}
+            className="w-full"
+            isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
+            color="success">
+            Save Public Key
+          </Button>
+        </ErrorTooltip>
       </div>
-      <Button
-        auto
-        onClick={() => {
-          sendPublicKeyHandler(object);
-        }}
+      <ErrorTooltip
+        warningTypes={["missing-rsa-public-key"]}
         className="w-full"
-        isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
-        color="warning"
-      >
-        Send Public Key
-      </Button>
+        data={data.rsa[object].generatedPublicKey}>
+        <Button
+          auto
+          onClick={() => {
+            sendPublicKeyHandler(object);
+          }}
+          className="w-full"
+          isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
+          color="warning">
+          Send Public Key
+        </Button>
+      </ErrorTooltip>
       <div className="flex flex-col gap-1 items-start justify-center w-full">
         <p className="text-sm">Received Public Key</p>
         <div className="flex flex-row gap-4 items-center justify-center w-full">
-          <Input label="e" value={data.rsa[object].recievedPublicKey.e} placeholder="e" width="100%" isReadOnly isDisabled={data.rsa[object].recievedPublicKey.e === undefined} />
-          <Input label="n" value={data.rsa[object].recievedPublicKey.n} placeholder="n" width="100%" isReadOnly isDisabled={data.rsa[object].recievedPublicKey.n === undefined} />
+          <Input
+            label="e"
+            value={data.rsa[object].recievedPublicKey.e}
+            placeholder="e"
+            width="100%"
+            isReadOnly
+            isDisabled={data.rsa[object].recievedPublicKey.e === undefined}
+          />
+          <Input
+            label="n"
+            value={data.rsa[object].recievedPublicKey.n}
+            placeholder="n"
+            width="100%"
+            isReadOnly
+            isDisabled={data.rsa[object].recievedPublicKey.n === undefined}
+          />
         </div>
       </div>
     </div>
@@ -140,9 +204,17 @@ const MessageInput = ({ object }) => {
   const [message, setMessage] = useState("");
 
   const handleSendMessage = () => {
-    const encryptedMessage = encrypt(message, data.rsa[object].recievedPublicKey);
+    const encryptedMessage = encrypt(
+      message,
+      data.rsa[object].recievedPublicKey
+    );
 
-    pushMessage(object, object === "left" ? "right" : "left", encryptedMessage, "text");
+    pushMessage(
+      object,
+      object === "left" ? "right" : "left",
+      encryptedMessage,
+      "text"
+    );
     setMessage("");
   };
 
@@ -157,13 +229,21 @@ const MessageInput = ({ object }) => {
 
     reader.onload = (event) => {
       const fileContent = event.target.result;
-      const encryptedMessage = encrypt(fileContent, data.rsa[object].recievedPublicKey);
+      const encryptedMessage = encrypt(
+        fileContent,
+        data.rsa[object].recievedPublicKey
+      );
 
-      pushMessage(object, object === "left" ? "right" : "left", encryptedMessage, "file", "file");
+      pushMessage(
+        object,
+        object === "left" ? "right" : "left",
+        encryptedMessage,
+        "file",
+        "file"
+      );
     };
 
     for (const file of files) {
-      console.log(file);
       reader.readAsDataURL(file);
     }
   };
@@ -173,31 +253,55 @@ const MessageInput = ({ object }) => {
   return (
     <div className="flex flex-row gap-2 items-center justify-center w-full">
       <Input value={message} onValueChange={setMessage} placeholder="Message" />
-      <Button
-        auto
-        onClick={() => {
-          inputFileRef.current.click();
-        }}
-        isDisabled={data.rsa[object].recievedPublicKey.e === undefined}
-      >
-        Import File
-      </Button>
-      <Button auto onClick={handleSendMessage} isDisabled={message === "" || data.rsa[object].recievedPublicKey.e === undefined} color="warning">
-        Send
-      </Button>
-      <input type="file" ref={inputFileRef} className="hidden" onChange={handleUpload(handleFile)} />
+      <ErrorTooltip
+        warningTypes={["missing-received-public-key"]}
+        data={data.rsa[object].recievedPublicKey}>
+        <Button
+          auto
+          onClick={() => {
+            inputFileRef.current.click();
+          }}
+          isDisabled={data.rsa[object].recievedPublicKey.e === undefined}>
+          Import File
+        </Button>
+      </ErrorTooltip>
+      <ErrorTooltip
+        warningTypes={["missing-received-public-key", "empty-message"]}
+        data={{...data.rsa[object].recievedPublicKey, message}}>
+        <Button
+          auto
+          onClick={handleSendMessage}
+          isDisabled={
+            message === "" || data.rsa[object].recievedPublicKey.e === undefined
+          }
+          color="warning">
+          Send
+        </Button>
+      </ErrorTooltip>
+      <input
+        type="file"
+        ref={inputFileRef}
+        className="hidden"
+        onChange={handleUpload(handleFile)}
+      />
     </div>
   );
 };
 
 const MessageBox = ({ payload, clearErrors, handleError }) => {
   const { data, setChatDecrypted, revertChat } = useContext(CipherInputContext);
-  const { id, sender, receiver, original, decrypted, status, type, fileName } = payload;
-  const avatar = <div className="size-[36px] w-min-[36px] aspect-square rounded-full bg-slate-900 mb-5" />;
+  const { id, sender, receiver, original, decrypted, status, type, fileName } =
+    payload;
+  const avatar = (
+    <div className="size-[36px] w-min-[36px] aspect-square rounded-full bg-slate-900 mb-5" />
+  );
 
   const decryptHandler = () => {
     try {
-      setChatDecrypted(id, decrypt(original, data.rsa[receiver].generatedPrivateKey));
+      setChatDecrypted(
+        id,
+        decrypt(original, data.rsa[receiver].generatedPrivateKey)
+      );
       clearErrors();
     } catch (error) {
       handleError(error);
@@ -228,8 +332,6 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
   const handleSaveDecrypted = () => {
     if (type === "file") {
       const extensionType = extension(decrypted.split(";")[0].split(":")[1]);
-      console.log("decrypted", decrypted);
-      console.log("extensionType", extensionType);
       const content = decrypted.split(",")[1];
 
       let blob = null;
@@ -258,35 +360,58 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
   }, []);
 
   return (
-    <div className={`flex flex-row gap-2 ${sender === "left" ? "mr-auto pr-12" : "ml-auto pl-12"} first:mt-auto max-w-full`} ref={thisRef}>
+    <div
+      className={`flex flex-row gap-2 ${
+        sender === "left" ? "mr-auto pr-12" : "ml-auto pl-12"
+      } first:mt-auto max-w-full`}
+      ref={thisRef}>
       {sender === "left" ? avatar : ""}
-      <div className={`flex flex-col gap-1 ${sender === "left" ? "mr-auto" : "ml-auto"} w-fit`}>
-        <div className={`flex flex-row gap-2 ${sender === "left" ? "mr-auto" : "ml-auto"} bg-zinc-950 w-fit rounded-xl px-2 py-1`}>
+      <div
+        className={`flex flex-col gap-1 ${
+          sender === "left" ? "mr-auto" : "ml-auto"
+        } w-fit`}>
+        <div
+          className={`flex flex-row gap-2 ${
+            sender === "left" ? "mr-auto" : "ml-auto"
+          } bg-zinc-950 w-fit rounded-xl px-2 py-1`}>
           {type === "file" ? (
             <>
               <FaRegFileLines className="text-xl" />
               <p className="text-sm break-all break-normal w-fit">{fileName}</p>
             </>
           ) : (
-            <p className="text-sm break-all break-normal w-fit">{status === "decrypted" ? decrypted : encode(original)}</p>
+            <p className="text-sm break-all break-normal w-fit">
+              {status === "decrypted" ? decrypted : encode(original)}
+            </p>
           )}
         </div>
-        <div className={`flex flex-row gap-3 items-center ${sender === "left" ? "mr-auto pl-2" : "ml-auto pr-2"}`}>
+        <div
+          className={`flex flex-row gap-3 items-center ${
+            sender === "left" ? "mr-auto pl-2" : "ml-auto pr-2"
+          }`}>
           {status === "original" ? (
             <>
-              <button className="text-xs text-gray-400 hover:text-gray-300 hover:underline" onClick={decryptHandler}>
+              <button
+                className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
+                onClick={decryptHandler}>
                 decrypt
               </button>
-              <button className="text-xs text-gray-400 hover:text-gray-300 hover:underline" onClick={handleSaveOriginal}>
+              <button
+                className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
+                onClick={handleSaveOriginal}>
                 save encrypted
               </button>
             </>
           ) : (
             <>
-              <button className="text-xs text-gray-400 hover:text-gray-300 hover:underline" onClick={() => revertChat(id)}>
+              <button
+                className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
+                onClick={() => revertChat(id)}>
                 revert to original
               </button>
-              <button className="text-xs text-gray-400 hover:text-gray-300 hover:underline" onClick={handleSaveDecrypted}>
+              <button
+                className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
+                onClick={handleSaveDecrypted}>
                 save decrypted
               </button>
             </>
@@ -300,7 +425,8 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
 };
 
 export default function RSAForm() {
-  const { data, setRSAGeneratedKeys, setRSARecievedPublicKey } = useContext(CipherInputContext);
+  const { data, setRSAGeneratedKeys, setRSARecievedPublicKey } =
+    useContext(CipherInputContext);
 
   const [errors, setErrors] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -372,14 +498,31 @@ export default function RSAForm() {
   return (
     <>
       <div className="flex flex-row gap-4 items-center justify-center w-full">
-        <Person object="left" data={data} handleGenerateKey={handleGenerateKey} sendPublicKeyHandler={sendPublicKeyHandler} errors={errors} />
+        <Person
+          object="left"
+          data={data}
+          handleGenerateKey={handleGenerateKey}
+          sendPublicKeyHandler={sendPublicKeyHandler}
+          errors={errors}
+        />
         <Divider orientation="vertical" />
-        <Person object="right" data={data} handleGenerateKey={handleGenerateKey} sendPublicKeyHandler={sendPublicKeyHandler} errors={errors} />
+        <Person
+          object="right"
+          data={data}
+          handleGenerateKey={handleGenerateKey}
+          sendPublicKeyHandler={sendPublicKeyHandler}
+          errors={errors}
+        />
       </div>
       <p className="text-2xl font-bold">Chat</p>
       <div className="flex flex-col gap-2 items-end w-full bg-neutral-800 h-[400px] max-w-[600px] rounded-md p-4 overflow-y-auto">
         {Object.values(data.chat).map((payload) => (
-          <MessageBox key={payload.id} payload={payload} clearErrors={clearErrors} handleError={handleError} />
+          <MessageBox
+            key={payload.id}
+            payload={payload}
+            clearErrors={clearErrors}
+            handleError={handleError}
+          />
         ))}
       </div>
       <div className="flex flex-row gap-4 items-center justify-center w-full">

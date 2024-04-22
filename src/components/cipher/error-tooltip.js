@@ -10,6 +10,7 @@ export default function ErrorTooltip({
   children,
   warningTypes = [],
   className = "",
+  data,
 }) {
   const { data: dataTypes } = useContext(CipherInputContext);
 
@@ -30,6 +31,18 @@ export default function ErrorTooltip({
     "missing-key": {
       predicate: () => !dataTypes.key,
       message: "Please enter the key.",
+    },
+    "missing-rsa-public-key": {
+      predicate: (data) => !data.e || !data.n,
+      message: "Please generate keys first.",
+    },
+    "missing-received-public-key": {
+      predicate: (data) => !data.e || !data.n,
+      message: "This side has not received the public key yet.",
+    },
+    "empty-message": {
+      predicate: (data) => data.message === "",
+      message: "Please enter a message.",
     },
     "missing-multiplier": {
       predicate: () => !dataTypes.multiplier,
@@ -56,7 +69,7 @@ export default function ErrorTooltip({
   const content = (
     <div>
       {warningTypes
-        .filter((type) => warnings[type].predicate())
+        .filter((type) => warnings[type].predicate(data))
         .map((type) => (
           <div key={type}>{warnings[type].message}</div>
         ))}
