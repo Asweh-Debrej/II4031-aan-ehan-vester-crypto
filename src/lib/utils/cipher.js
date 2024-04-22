@@ -33,26 +33,42 @@ export const gcd = (a, b) => {
   return gcd(b, a % b);
 };
 
+export const bigSQRT = (value) => {
+  if (value < 0n) {
+    throw "square root of negative numbers is not supported";
+  }
+
+  if (value < 2n) {
+    return value;
+  }
+
+  let x = value;
+  let y = (x + 1n) / 2n;
+  while (y < x) {
+    x = y;
+    y = (x + value / x) / 2n;
+  }
+  return x;
+}
+
 export const isPrime = (num) => {
   if (num <= 1) {
     return false;
   }
 
   const bigNum = BigInt(num);
-  const s = Math.sqrt(num);
-  let y = 0;
-  for (let i = 2; i <= s; i++) {
-    if (bigNum % BigInt(i) === 0) {
+
+  const s = bigSQRT(bigNum);
+  let y = BigInt(0);
+  for (let i = BigInt(2); i <= s; i++) {
+    if (bigNum % i === BigInt(0)) {
       return false;
     }
-    y++
+    y++;
   }
 
-  console.log(y);
-  console.log(s);
-
   return true;
-}
+};
 
 export const modPow = (base, exp, mod) => {
   if (exp == 0) {
@@ -62,4 +78,4 @@ export const modPow = (base, exp, mod) => {
     return modPow((base * base) % mod, exp / 2, mod);
   }
   return (base * modPow(base, exp - 1, mod)) % mod;
-}
+};

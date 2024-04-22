@@ -65,6 +65,18 @@ let context = {
 
 let chatLength = 0;
 
+// chat = {
+//   id: {
+//     id: number,
+//     sender: string,
+//     receiver: string,
+//     decrypted: string | file,
+//     original: string | file,
+//     status: "original" | "decrypted",
+//     type: "file" | "text",
+//   },
+// }
+
 function chatReducer(state, action) {
   switch (action.type) {
     case "pushMessage":
