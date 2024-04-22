@@ -3,7 +3,7 @@
 Program ini menggunakan **Next.js**, kerangka kerja React yang memungkinkan Anda membuat aplikasi web dengan mudah. Berikut adalah beberapa langkah untuk memulai:
 
 ## Link Deploy
-<[https://t1-aan-ehan-crypto-ciphers.vercel.app/home](https://ii4031-aan-vester-crypto.vercel.app/cipher/rsa)>
+<(https://ii4031-aan-vester-crypto.vercel.app/cipher/rsa)>
 
 ## Instalasi
 
@@ -12,7 +12,7 @@ Program ini menggunakan **Next.js**, kerangka kerja React yang memungkinkan Anda
 2. Clone repositori ini
 
    ```bash
-   git clone [https://github.com/Asweh-Debrej/T1-II4031-Kripto/](https://github.com/Asweh-Debrej/II4031-aan-vester-crypto.git)
+   git clone https://github.com/Asweh-Debrej/II4031-aan-vester-crypto.git
    ```
 
 3. Jalankan perintah berikut untuk menginstal dependensi:
