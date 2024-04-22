@@ -49,15 +49,10 @@ export const encrypt = (plaintext, publicKey) => {
   }
 
   const { e, n } = publicKey;
-  console.log("e", e);
-  console.log("n", n);
   let encryptedText = "";
-  console.log("plaintext", plaintext);
   for (let i = 0; i < plaintext.length; i++) {
     const charCode = plaintext.charCodeAt(i);
-    console.log("charCode", charCode);
     const encryptedCharCode = modPow(charCode, e, n);
-    console.log("encryptedCharCode", encryptedCharCode);
     encryptedText += String.fromCharCode(encryptedCharCode);
   }
   return encryptedText;
@@ -79,15 +74,10 @@ export const decrypt = (ciphertext, privateKey) => {
   }
 
   const { d, n } = privateKey;
-  console.log("d", d);
-  console.log("n", n);
   let decryptedText = "";
-  console.log("ciphertext", ciphertext);
   for (let i = 0; i < ciphertext.length; i++) {
     const charCode = ciphertext.charCodeAt(i);
-    console.log("charCode", charCode);
     const decryptedCharCode = modPow(charCode, d, n);
-    console.log("decryptedCharCode", decryptedCharCode);
     decryptedText += String.fromCharCode(decryptedCharCode);
   }
   return decryptedText;

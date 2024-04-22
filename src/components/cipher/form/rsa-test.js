@@ -14,6 +14,10 @@ import CipherButton from "../cipher-button";
 import FileForm from "../file-form";
 import { set } from "lodash";
 import { encode } from "js-base64";
+import { FaRegFileLines } from "react-icons/fa6";
+
+import { base64StringToBlob } from "blob-util";
+import { extension } from "mime-types";
 
 const explodeResult = true;
 
@@ -68,7 +72,8 @@ const Person = ({
         onClick={() => {
           handleGenerateKey(object);
         }}
-        className="w-full">
+        className="w-full"
+        color="warning">
         Generate Key
       </Button>
       <div className="flex flex-col gap-1 items-start justify-center w-full">
@@ -109,13 +114,32 @@ const Person = ({
           />
         </div>
       </div>
+      <div className="flex flex-row gap-4 items-center justify-center w-full">
+        <Button
+          auto
+          onClick={() => {}}
+          className="w-full"
+          isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
+          color="success">
+          Save Private Key
+        </Button>
+        <Button
+          auto
+          onClick={() => {}}
+          className="w-full"
+          isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
+          color="success">
+          Save Public Key
+        </Button>
+      </div>
       <Button
         auto
         onClick={() => {
           sendPublicKeyHandler(object);
         }}
         className="w-full"
-        isDisabled={data.rsa[object].generatedPublicKey.e === undefined}>
+        isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
+        color="warning">
         Send Public Key
       </Button>
       <div className="flex flex-col gap-1 items-start justify-center w-full">
@@ -143,7 +167,7 @@ const Person = ({
   );
 };
 
-const MessageInput = ({ object, onAdd }) => {
+const MessageInput = ({ object }) => {
   const { data, pushMessage } = useContext(CipherInputContext);
   const [message, setMessage] = useState("");
 
@@ -152,14 +176,60 @@ const MessageInput = ({ object, onAdd }) => {
       message,
       data.rsa[object].recievedPublicKey
     );
-    pushMessage(object, object === "left" ? "right" : "left", encryptedMessage);
+
+    pushMessage(
+      object,
+      object === "left" ? "right" : "left",
+      encryptedMessage,
+      "text"
+    );
     setMessage("");
-    onAdd();
   };
 
+  const handleUpload = (handler) => (event) => {
+    const files = event.target.files;
+    handler(files);
+    event.target.value = null;
+  };
+
+  const handleFile = (files) => {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const fileContent = event.target.result;
+      const encryptedMessage = encrypt(
+        fileContent,
+        data.rsa[object].recievedPublicKey
+      );
+
+      pushMessage(
+        object,
+        object === "left" ? "right" : "left",
+        encryptedMessage,
+        "file",
+        "file.txt"
+      );
+    };
+
+    for (const file of files) {
+      console.log(file);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const inputFileRef = useRef();
+
   return (
-    <div className="flex flex-row gap-4 items-center justify-center w-full">
+    <div className="flex flex-row gap-2 items-center justify-center w-full">
       <Input value={message} onValueChange={setMessage} placeholder="Message" />
+      <Button
+        auto
+        onClick={() => {
+          inputFileRef.current.click();
+        }}
+        isDisabled={data.rsa[object].recievedPublicKey.e === undefined}>
+        Import File
+      </Button>
       <Button
         auto
         onClick={handleSendMessage}
@@ -169,13 +239,20 @@ const MessageInput = ({ object, onAdd }) => {
         color="warning">
         Send
       </Button>
+      <input
+        type="file"
+        ref={inputFileRef}
+        className="hidden"
+        onChange={handleUpload(handleFile)}
+      />
     </div>
   );
 };
 
 const MessageBox = ({ payload, clearErrors, handleError }) => {
   const { data, setChatDecrypted, revertChat } = useContext(CipherInputContext);
-  const { id, sender, receiver, original, decrypted, status } = payload;
+  const { id, sender, receiver, original, decrypted, status, type, fileName } =
+    payload;
   const avatar = (
     <div className="size-[36px] w-min-[36px] aspect-square rounded-full bg-slate-900 mb-5" />
   );
@@ -193,6 +270,53 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
   };
 
   const thisRef = useRef();
+  const saveFileRef = useRef();
+
+  const handleSaveOriginal = () => {
+    if (type === "file") {
+      const blob = new Blob([encode(original)], {
+        type: "application/octet-stream",
+      });
+      const url = URL.createObjectURL(blob);
+      saveFileRef.current.href = url;
+      saveFileRef.current.download = "ciphertext.AAN";
+      saveFileRef.current.click();
+    } else if (type === "text") {
+      const blob = new Blob([encode(original)], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      saveFileRef.current.href = url;
+      saveFileRef.current.download = "ciphertext.txt";
+      saveFileRef.current.click();
+    }
+  };
+
+  const handleSaveDecrypted = () => {
+    if (type === "file") {
+      const extensionType = extension(decrypted.split(";")[0].split(":")[1]);
+      console.log("decrypted", decrypted)
+      console.log("extensionType", extensionType);
+      const content = decrypted.split(",")[1];
+
+      let blob = null;
+
+      if (extensionType && content) {
+        blob = base64StringToBlob(content, extensionType);
+        saveFileRef.current.download = `plaintext.${extensionType}`;
+      } else {
+        blob = new Blob([decrypted], { type: "text/plain" });
+        saveFileRef.current.download = "plaintext.txt";
+      }
+
+      saveFileRef.current.href = URL.createObjectURL(blob);
+      saveFileRef.current.click();
+    } else if (type === "text") {
+      const blob = new Blob([decrypted], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      saveFileRef.current.href = url;
+      saveFileRef.current.download = "plaintext.txt";
+      saveFileRef.current.click();
+    }
+  };
 
   useEffect(() => {
     thisRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -213,30 +337,52 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
           className={`flex flex-row gap-2 ${
             sender === "left" ? "mr-auto" : "ml-auto"
           } bg-zinc-950 w-fit rounded-xl px-2 py-1`}>
-          <p className="text-sm break-all break-normal w-fit">
-            {status === "decrypted" ? decrypted : encode(original)}
-          </p>
+          {type === "file" ? (
+            <>
+              <FaRegFileLines className="text-xl" />
+              <p className="text-sm break-all break-normal w-fit">{fileName}</p>
+            </>
+          ) : (
+            <p className="text-sm break-all break-normal w-fit">
+              {status === "decrypted" ? decrypted : encode(original)}
+            </p>
+          )}
         </div>
         <div
           className={`flex flex-row gap-3 items-center ${
             sender === "left" ? "mr-auto pl-2" : "ml-auto pr-2"
           }`}>
           {status === "original" ? (
-            <button
-              className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
-              onClick={decryptHandler}>
-              decrypt
-            </button>
+            <>
+              <button
+                className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
+                onClick={decryptHandler}>
+                decrypt
+              </button>
+              <button
+                className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
+                onClick={handleSaveOriginal}>
+                save encrypted
+              </button>
+            </>
           ) : (
-            <button
-              className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
-              onClick={() => revertChat(id)}>
-              revert to original
-            </button>
+            <>
+              <button
+                className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
+                onClick={() => revertChat(id)}>
+                revert to original
+              </button>
+              <button
+                className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
+                onClick={handleSaveDecrypted}>
+                save decrypted
+              </button>
+            </>
           )}
         </div>
       </div>
       {sender === "right" ? avatar : ""}
+      <a ref={saveFileRef} className="hidden" download />
     </div>
   );
 };
@@ -248,8 +394,6 @@ export default function RSAForm() {
   const [errors, setErrors] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [currentSuccess, setCurrentSuccess] = useState("");
-
-  const chatBoxRef = useRef();
 
   const handleError = (error) => {
     if (error instanceof InputError) {
@@ -270,7 +414,6 @@ export default function RSAForm() {
       const p = data.rsa[object].p;
       const q = data.rsa[object].q;
       const generatedKeys = generateKeys(p, q);
-      console.log(generatedKeys);
 
       setRSAGeneratedKeys(object, generatedKeys);
 
@@ -334,9 +477,7 @@ export default function RSAForm() {
           errors={errors}
         />
       </div>
-      <p className="text-2xl font-bold" ref={chatBoxRef}>
-        Chat
-      </p>
+      <p className="text-2xl font-bold">Chat</p>
       <div className="flex flex-col gap-2 items-end w-full bg-neutral-800 h-[400px] max-w-[600px] rounded-md p-4 overflow-y-auto">
         {Object.values(data.chat).map((payload) => (
           <MessageBox
@@ -348,19 +489,9 @@ export default function RSAForm() {
         ))}
       </div>
       <div className="flex flex-row gap-4 items-center justify-center w-full">
-        <MessageInput
-          object="left"
-          onAdd={() => {
-            chatBoxRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-          }}
-        />
+        <MessageInput object="left" />
         <Divider orientation="vertical" />
-        <MessageInput
-          object="right"
-          onAdd={() => {
-            chatBoxRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-          }}
-        />
+        <MessageInput object="right" />
       </div>
       <CipherError errors={errors} errorMessage={errorMessage} />
     </>

@@ -58,7 +58,7 @@ let context = {
   setRSAQ: (object, q) => {},
   setRSAGeneratedKeys: (object, keys) => {},
   setRSARecievedPublicKey: (object, key) => {},
-  pushMessage: (sender, receiver, message) => {},
+  pushMessage: (sender, receiver, message, type = "text", fileName = "") => {},
   setChatDecrypted: (id, decrypted) => {},
   revertChat: (id) => {},
 };
@@ -74,6 +74,7 @@ let chatLength = 0;
 //     original: string | file,
 //     status: "original" | "decrypted",
 //     type: "file" | "text",
+//     fileName: string,
 //   },
 // }
 
@@ -88,6 +89,8 @@ function chatReducer(state, action) {
         decrypted: "",
         original: action.message,
         status: "original",
+        type: action.contentType || "text",
+        fileName: action.fileName || "",
       };
 
       const newState = {
@@ -213,8 +216,15 @@ export const CipherInputProvider = ({ children }) => {
     setRSARecievedPublicKey: (object, key) => {
       setRSA(update(rsa, { [object]: { recievedPublicKey: { $set: key } } }));
     },
-    pushMessage: (sender, receiver, message) => {
-      dispatchChat({ type: "pushMessage", sender, receiver, message });
+    pushMessage: (sender, receiver, message, type = "text", fileName = "") => {
+      dispatchChat({
+        type: "pushMessage",
+        sender,
+        receiver,
+        message,
+        contentType: type,
+        fileName,
+      });
     },
     setChatDecrypted: (id, decrypted) => {
       dispatchChat({ type: "setDecrypted", id, decrypted });
