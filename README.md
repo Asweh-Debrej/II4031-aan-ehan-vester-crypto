@@ -3,7 +3,7 @@
 Program ini menggunakan **Next.js**, kerangka kerja React yang memungkinkan Anda membuat aplikasi web dengan mudah. Berikut adalah beberapa langkah untuk memulai:
 
 ## Link Deploy
-<https://t1-aan-ehan-crypto-ciphers.vercel.app/home>
+<[https://t1-aan-ehan-crypto-ciphers.vercel.app/home](https://ii4031-aan-vester-crypto.vercel.app/cipher/rsa)>
 
 ## Instalasi
 
@@ -47,28 +47,34 @@ Beberapa karakter UTF-8 tidak bisa disalin ke *clipboard* sehingga penggunaan Ba
 ## Direktori Proyek
 
 ````bash
-T1-II4031-Kripto
-    ├───public
-    └───src
-        ├───app
-        │   └───(main)
-        │       ├───cipher
-        │       │   ├───affine
-        │       │   ├───playfair
-        │       │   ├───product
-        │       │   ├───vigenere
-        │       │   ├───vigenere-auto-key
-        │       │   ├───vigenere-ext
-        │       │   └───rc4 <========================= new (modified rc4)
-        │       └───home
-        ├───components
-        │   └───cipher
-        │       └───form
-        └───lib
-            ├───cipher
-            ├───error
-            ├───store
-            └───utils
+├───public
+└───src
+    ├───app
+    │   └───(main)
+    │       ├───about
+    │       ├───cipher
+    │       │   ├───affine
+    │       │   ├───playfair
+    │       │   ├───product
+    │       │   ├───rc4
+    │       │   ├───rsa
+    │       │   │   └───page.js <============= new
+    │       │   ├───rsa-test
+    │       │   ├───vigenere
+    │       │   ├───vigenere-auto-key
+    │       │   └───vigenere-ext
+    │       └───home
+    ├───components
+    │   └───cipher
+    │       └───form
+    │           └───rsa.js <================= new
+    └───lib
+        ├───cipher
+        │   └───rsa.js <===================== new
+        ├───error
+        ├───store
+        └───utils
+              └───cipher.js <================ updated
 ````
 
 Algoritma ciphers terdapat pada ./src/lib/cipher
@@ -77,4 +83,4 @@ Algoritma ciphers terdapat pada ./src/lib/cipher
 |   Anggota   | NIM   |
 |   ---   |   ---   |
 | Muhammad Farhan Syakir   |   18221145   |
-| Rayhan Nugraha Putra   |   18221149   |
+| Silvester Kresna W. P. P.   |   18221049   |
