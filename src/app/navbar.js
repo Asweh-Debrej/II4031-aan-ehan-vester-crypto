@@ -21,7 +21,7 @@ import { ChevronDown } from "@/lib/icons";
 const pages = [
   { name: "Home", href: "/home" },
   {
-    name: "Chiper",
+    name: "Cipher",
     prefix: "/cipher",
     hrefs: [
       {
