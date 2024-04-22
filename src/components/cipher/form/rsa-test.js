@@ -34,6 +34,17 @@ const Person = ({
 }) => {
   const { data, setRSAP, setRSAQ } = useContext(CipherInputContext);
 
+  const saveKeyRef = useRef();
+
+  const handleSaveKey = (key, type) => {
+    const blob = new Blob([JSON.stringify(key)], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    saveKeyRef.current.href = url;
+    saveKeyRef.current.download =
+      type === "private" ? "private-key.pri" : "public-key.pub";
+    saveKeyRef.current.click();
+  };
+
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full">
       <p className="text-2xl font-bold">{persons.object}</p>
@@ -112,12 +123,15 @@ const Person = ({
             isReadOnly
             isDisabled={data.rsa[object].generatedPublicKey.n === undefined}
           />
+          <a ref={saveKeyRef} className="hidden" download />
         </div>
       </div>
       <div className="flex flex-row gap-4 items-center justify-center w-full">
         <Button
           auto
-          onClick={() => {}}
+          onClick={() => {
+            handleSaveKey(data.rsa[object].generatedPrivateKey, "private");
+          }}
           className="w-full"
           isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
           color="success">
@@ -125,7 +139,9 @@ const Person = ({
         </Button>
         <Button
           auto
-          onClick={() => {}}
+          onClick={() => {
+            handleSaveKey(data.rsa[object].generatedPublicKey, "public");
+          }}
           className="w-full"
           isDisabled={data.rsa[object].generatedPublicKey.e === undefined}
           color="success">
@@ -293,7 +309,7 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
   const handleSaveDecrypted = () => {
     if (type === "file") {
       const extensionType = extension(decrypted.split(";")[0].split(":")[1]);
-      console.log("decrypted", decrypted)
+      console.log("decrypted", decrypted);
       console.log("extensionType", extensionType);
       const content = decrypted.split(",")[1];
 
