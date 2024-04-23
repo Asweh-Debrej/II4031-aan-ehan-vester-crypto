@@ -14,8 +14,10 @@ import PlainCipherTextarea from "../plain-cipher-textarea";
 import CipherButton from "../cipher-button";
 import FileForm from "../file-form";
 import { set } from "lodash";
-import { encode } from "js-base64";
+import { encode, decode } from "js-base64";
 import { FaRegFileLines } from "react-icons/fa6";
+import { RiSendPlaneFill } from "react-icons/ri";
+import { BiSolidFileImport } from "react-icons/bi";
 
 import { base64StringToBlob } from "blob-util";
 import { extension } from "mime-types";
@@ -61,7 +63,11 @@ const Person = ({
             errors.find((error) => error.field === `${object}.p`) !== undefined
           }
           errorMessage={
-            errors.find((error) => error.field === `${object}.p`)?.message
+            (errors.find((error) => error.field === `${object}.p`)?.message ??
+              "") +
+            (!Number.isSafeInteger(data.rsa[object].p * data.rsa[object].q)
+              ? ". Defining too large p and q may cause problem"
+              : "")
           }
         />
         <Input
@@ -75,7 +81,11 @@ const Person = ({
             errors.find((error) => error.field === `${object}.q`) !== undefined
           }
           errorMessage={
-            errors.find((error) => error.field === `${object}.q`)?.message
+            (errors.find((error) => error.field === `${object}.q`)?.message ??
+              "") ||
+            (!Number.isSafeInteger(data.rsa[object].p * data.rsa[object].q)
+              ? ". Defining too large p and q may cause problem"
+              : "")
           }
         />
       </div>
@@ -199,23 +209,27 @@ const Person = ({
   );
 };
 
-const MessageInput = ({ object }) => {
+const MessageInput = ({ object, clearErrors, handleError }) => {
   const { data, pushMessage } = useContext(CipherInputContext);
   const [message, setMessage] = useState("");
 
   const handleSendMessage = () => {
-    const encryptedMessage = encrypt(
-      message,
-      data.rsa[object].recievedPublicKey
-    );
+    try {
+      const encryptedMessage = encode(
+        encrypt(message, data.rsa[object].recievedPublicKey)
+      );
 
-    pushMessage(
-      object,
-      object === "left" ? "right" : "left",
-      encryptedMessage,
-      "text"
-    );
-    setMessage("");
+      pushMessage(
+        object,
+        object === "left" ? "right" : "left",
+        encryptedMessage,
+        "text"
+      );
+      setMessage("");
+      clearErrors();
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   const handleUpload = (handler) => (event) => {
@@ -225,25 +239,30 @@ const MessageInput = ({ object }) => {
   };
 
   const handleFile = (files) => {
-    const reader = new FileReader();
+    const onLoadHandler = (fileName) => (event) => {
+      try {
+        const fileContent = event.target.result;
+        const encryptedMessage = encode(
+          encrypt(fileContent, data.rsa[object].recievedPublicKey)
+        );
 
-    reader.onload = (event) => {
-      const fileContent = event.target.result;
-      const encryptedMessage = encrypt(
-        fileContent,
-        data.rsa[object].recievedPublicKey
-      );
-
-      pushMessage(
-        object,
-        object === "left" ? "right" : "left",
-        encryptedMessage,
-        "file",
-        "file"
-      );
+        pushMessage(
+          object,
+          object === "left" ? "right" : "left",
+          encryptedMessage,
+          "file",
+          fileName
+        );
+        clearErrors();
+      } catch (error) {
+        handleError(error);
+      }
     };
 
     for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = onLoadHandler(file.name);
+
       reader.readAsDataURL(file);
     }
   };
@@ -251,33 +270,47 @@ const MessageInput = ({ object }) => {
   const inputFileRef = useRef();
 
   return (
-    <div className="flex flex-row gap-2 items-center justify-center w-full">
-      <Input value={message} onValueChange={setMessage} placeholder="Message" />
-      <ErrorTooltip
-        warningTypes={["missing-received-public-key"]}
-        data={data.rsa[object].recievedPublicKey}>
-        <Button
-          auto
-          onClick={() => {
-            inputFileRef.current.click();
-          }}
-          isDisabled={data.rsa[object].recievedPublicKey.e === undefined}>
-          Import File
-        </Button>
-      </ErrorTooltip>
-      <ErrorTooltip
-        warningTypes={["missing-received-public-key", "empty-message"]}
-        data={{...data.rsa[object].recievedPublicKey, message}}>
-        <Button
-          auto
-          onClick={handleSendMessage}
-          isDisabled={
-            message === "" || data.rsa[object].recievedPublicKey.e === undefined
-          }
-          color="warning">
-          Send
-        </Button>
-      </ErrorTooltip>
+    <div className="flex flex-row gap-1 md:gap-2 items-center justify-center w-full">
+      <Input
+        value={message}
+        onValueChange={setMessage}
+        placeholder="Message"
+        className="min-w-[100px]"
+      />
+      <div className="flex flex-col md:flex-row gap-1 md:gap-2 items-center justify-center w-fit">
+        <ErrorTooltip
+          warningTypes={["missing-received-public-key"]}
+          className="w-full"
+          data={data.rsa[object].recievedPublicKey}>
+          <Button
+            auto
+            onClick={() => {
+              inputFileRef.current.click();
+            }}
+            className="w-full"
+            isDisabled={data.rsa[object].recievedPublicKey.e === undefined}
+            isIconOnly>
+            <BiSolidFileImport />
+          </Button>
+        </ErrorTooltip>
+        <ErrorTooltip
+          warningTypes={["missing-received-public-key", "empty-message"]}
+          className="w-full"
+          data={{ ...data.rsa[object].recievedPublicKey, message }}>
+          <Button
+            auto
+            onClick={handleSendMessage}
+            className="w-full"
+            isDisabled={
+              message === "" ||
+              data.rsa[object].recievedPublicKey.e === undefined
+            }
+            color="warning"
+            isIconOnly>
+            <RiSendPlaneFill />
+          </Button>
+        </ErrorTooltip>
+      </div>
       <input
         type="file"
         ref={inputFileRef}
@@ -289,9 +322,19 @@ const MessageInput = ({ object }) => {
 };
 
 const MessageBox = ({ payload, clearErrors, handleError }) => {
-  const { data, setChatDecrypted, revertChat } = useContext(CipherInputContext);
-  const { id, sender, receiver, original, decrypted, status, type, fileName } =
-    payload;
+  const { data, setChatDecrypted, revertChat, toggleBase64 } =
+    useContext(CipherInputContext);
+  const {
+    id,
+    sender,
+    receiver,
+    original,
+    decrypted,
+    status,
+    type,
+    fileName,
+    useBase64,
+  } = payload;
   const avatar = (
     <div className="size-[36px] w-min-[36px] aspect-square rounded-full bg-slate-900 mb-5" />
   );
@@ -300,7 +343,7 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
     try {
       setChatDecrypted(
         id,
-        decrypt(original, data.rsa[receiver].generatedPrivateKey)
+        decrypt(decode(original), data.rsa[receiver].generatedPrivateKey)
       );
       clearErrors();
     } catch (error) {
@@ -313,7 +356,7 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
 
   const handleSaveOriginal = () => {
     if (type === "file") {
-      const blob = new Blob([encode(original)], {
+      const blob = new Blob([original], {
         type: "application/octet-stream",
       });
       const url = URL.createObjectURL(blob);
@@ -321,7 +364,7 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
       saveFileRef.current.download = "ciphertext.AAN";
       saveFileRef.current.click();
     } else if (type === "text") {
-      const blob = new Blob([encode(original)], { type: "text/plain" });
+      const blob = new Blob([original], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
       saveFileRef.current.href = url;
       saveFileRef.current.download = "ciphertext.txt";
@@ -331,14 +374,19 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
 
   const handleSaveDecrypted = () => {
     if (type === "file") {
-      const extensionType = extension(decrypted.split(";")[0].split(":")[1]);
+      const fileNames = fileName.split(".");
+      const fileExtension = fileNames[fileNames.length - 1];
       const content = decrypted.split(",")[1];
+      console.log("decrypted", decrypted);
 
       let blob = null;
 
-      if (extensionType && content) {
-        blob = base64StringToBlob(content, extensionType);
-        saveFileRef.current.download = `plaintext.${extensionType}`;
+      console.log("content", content);
+      console.log("fileExtension", fileExtension);
+
+      if (fileNames.length > 1 && content) {
+        blob = base64StringToBlob(content, fileExtension);
+        saveFileRef.current.download = `plaintext.${fileExtension}`;
       } else {
         blob = new Blob([decrypted], { type: "text/plain" });
         saveFileRef.current.download = "plaintext.txt";
@@ -347,6 +395,7 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
       saveFileRef.current.href = URL.createObjectURL(blob);
       saveFileRef.current.click();
     } else if (type === "text") {
+      console.log("lewat sini");
       const blob = new Blob([decrypted], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
       saveFileRef.current.href = url;
@@ -376,12 +425,19 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
           } bg-zinc-950 w-fit rounded-xl px-2 py-1`}>
           {type === "file" ? (
             <>
-              <FaRegFileLines className="text-xl" />
-              <p className="text-sm break-all break-normal w-fit">{fileName}</p>
+              <FaRegFileLines className="text-xl size-4 self-center" />
+              <p className="text-sm break-all break-normal w-fit">
+                {status === "decrypted" ? "plaintext" : "ciphertext"}{" "}
+                {`( ${fileName} )`}
+              </p>
             </>
           ) : (
             <p className="text-sm break-all break-normal w-fit">
-              {status === "decrypted" ? decrypted : encode(original)}
+              {status === "decrypted"
+                ? decrypted
+                : useBase64
+                ? original
+                : decode(original)}
             </p>
           )}
         </div>
@@ -391,6 +447,15 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
           }`}>
           {status === "original" ? (
             <>
+              {type === "text" ? (
+                <button
+                  className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
+                  onClick={() => toggleBase64(id)}>
+                  {useBase64 ? "show UTF-8" : "show base64"}
+                </button>
+              ) : (
+                ""
+              )}
               <button
                 className="text-xs text-gray-400 hover:text-gray-300 hover:underline"
                 onClick={decryptHandler}>
@@ -525,10 +590,18 @@ export default function RSAForm() {
           />
         ))}
       </div>
-      <div className="flex flex-row gap-4 items-center justify-center w-full">
-        <MessageInput object="left" />
+      <div className="flex flex-row gap-2 md:gap-4 items-center justify-center w-full">
+        <MessageInput
+          object="left"
+          clearErrors={clearErrors}
+          handleError={handleError}
+        />
         <Divider orientation="vertical" />
-        <MessageInput object="right" />
+        <MessageInput
+          object="right"
+          clearErrors={clearErrors}
+          handleError={handleError}
+        />
       </div>
       <CipherError errors={errors} errorMessage={errorMessage} />
     </>

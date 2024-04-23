@@ -61,6 +61,7 @@ let context = {
   pushMessage: (sender, receiver, message, type = "text", fileName = "") => {},
   setChatDecrypted: (id, decrypted) => {},
   revertChat: (id) => {},
+  toggleBase64: (id) => {},
 };
 
 let chatLength = 0;
@@ -75,6 +76,7 @@ let chatLength = 0;
 //     status: "original" | "decrypted",
 //     type: "file" | "text",
 //     fileName: string,
+//     useBase64: boolean,
 //   },
 // }
 
@@ -91,6 +93,7 @@ function chatReducer(state, action) {
         status: "original",
         type: action.contentType || "text",
         fileName: action.fileName || "",
+        useBase64: true,
       };
 
       const newState = {
@@ -115,6 +118,15 @@ function chatReducer(state, action) {
         [action.id]: {
           ...state[action.id],
           status: "original",
+        },
+      };
+
+    case "toggleBase64":
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          useBase64: !state[action.id].useBase64,
         },
       };
 
@@ -231,6 +243,9 @@ export const CipherInputProvider = ({ children }) => {
     },
     revertChat: (id) => {
       dispatchChat({ type: "revert", id });
+    },
+    toggleBase64: (id) => {
+      dispatchChat({ type: "toggleBase64", id });
     },
   };
 

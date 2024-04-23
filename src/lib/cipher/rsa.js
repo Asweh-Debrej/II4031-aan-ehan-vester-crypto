@@ -52,6 +52,11 @@ export const encrypt = (plaintext, publicKey) => {
   let encryptedText = "";
   for (let i = 0; i < plaintext.length; i++) {
     const charCode = plaintext.charCodeAt(i);
+    if (charCode >= n) {
+      throw new InputError("n is too small", "CharacterCodeError", [
+        { field: "n", message: "n is too small, try increasing p or q before generating keys from public key owner" },
+      ]);
+    }
     const encryptedCharCode = modPow(charCode, e, n);
     encryptedText += String.fromCharCode(encryptedCharCode);
   }
