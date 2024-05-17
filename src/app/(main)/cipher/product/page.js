@@ -1,6 +1,6 @@
-import ProductForm from "@/components/cipher/form/product";
+import ProductForm from "@/app/(main)/cipher/product/product";
 
-import Notes from "@/components/cipher/notes";
+import Notes from "../notes";
 
 const notes = [
   {

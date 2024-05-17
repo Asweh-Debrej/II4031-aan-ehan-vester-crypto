@@ -1,6 +1,6 @@
-import VigenereAutoKeyForm from "@/components/cipher/form/vigenere-auto-key";
+import VigenereAutoKeyForm from "./vigenere-auto-key";
 
-import Notes from "@/components/cipher/notes";
+import Notes from "../notes";
 
 const notes = [
   {

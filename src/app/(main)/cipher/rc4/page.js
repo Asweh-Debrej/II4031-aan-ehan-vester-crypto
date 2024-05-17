@@ -1,6 +1,6 @@
-import RC4Form from "@/components/cipher/form/rc4";
+import RC4Form from "@/app/(main)/cipher/rc4/rc4";
 
-import Notes from "@/components/cipher/notes";
+import Notes from "../notes";
 
 const notes = [
   {

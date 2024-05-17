@@ -1,6 +1,6 @@
-import RSAForm from "@/components/cipher/form/rsa";
+import RSAForm from "@/app/(main)/cipher/rsa/rsa";
 
-import Notes from "@/components/cipher/notes";
+import Notes from "../notes";
 
 const notes = [
   {

@@ -1,6 +1,6 @@
-import AffineForm from "@/components/cipher/form/affine";
+import AffineForm from "./affine";
 
-import Notes from "@/components/cipher/notes";
+import Notes from "../notes";
 
 const notes = [
   {

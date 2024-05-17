@@ -1,6 +1,6 @@
-import PlayfairForm from "@/components/cipher/form/playfair";
+import PlayfairForm from "./playfair";
 
-import Notes from "@/components/cipher/notes";
+import Notes from "../notes";
 
 const notes1 = [
   {

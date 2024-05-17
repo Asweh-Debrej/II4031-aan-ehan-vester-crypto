@@ -4,7 +4,7 @@ import { useContext } from "react";
 
 import { Button } from "@nextui-org/react";
 import { CipherInputContext } from "@/lib/store/cipher-input-context";
-import ErrorTooltip from "@/components/cipher/error-tooltip";
+import ErrorTooltip from "./error-tooltip";
 import { reduce } from "lodash";
 
 export default function CipherButton({

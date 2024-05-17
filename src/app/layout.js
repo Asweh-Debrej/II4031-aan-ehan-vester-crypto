@@ -6,7 +6,7 @@ import NavbarComponent from "./navbar";
 import { Suspense } from "react";
 import { Skeleton } from "@nextui-org/react";
 
-import ProgressBar from "@/components/progress-bar";
+import ProgressBar from "./progress-bar";
 
 const inter = Inter({ subsets: ["latin"] });
 

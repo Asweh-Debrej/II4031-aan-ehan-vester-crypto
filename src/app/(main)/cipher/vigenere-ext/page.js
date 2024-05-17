@@ -1,6 +1,6 @@
-import VigenereExtForm from "@/components/cipher/form/vigenere-ext";
+import VigenereExtForm from "./vigenere-ext";
 
-import Notes from "@/components/cipher/notes";
+import Notes from "../notes";
 
 const notes = [
   {
