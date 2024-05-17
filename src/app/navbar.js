@@ -58,6 +58,16 @@ const pages = [
       },
     ],
   },
+  {
+    name: "Use Cases",
+    prefix: "/use-cases",
+    hrefs: [
+      {
+        name: "School Transcripts",
+        href: "/use-cases/school-transcripts",
+      },
+    ],
+  },
   { name: "About", href: "/about" },
 ];
 
