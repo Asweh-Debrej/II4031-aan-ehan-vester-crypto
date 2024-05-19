@@ -60,11 +60,11 @@ const pages = [
   },
   {
     name: "Use Cases",
-    prefix: "/use-cases",
+    prefix: "/use-case",
     hrefs: [
       {
         name: "School Transcripts",
-        href: "/use-cases/school-transcripts",
+        href: "/use-case/school-transcripts",
       },
     ],
   },
