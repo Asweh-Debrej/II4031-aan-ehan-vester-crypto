@@ -49,7 +49,7 @@ export const bigSQRT = (value) => {
     y = (x + value / x) / 2n;
   }
   return x;
-}
+};
 
 export const isPrime = (num) => {
   if (num <= 1) {
@@ -78,4 +78,22 @@ export const modPow = (base, exp, mod) => {
     return modPow((base * base) % mod, exp / 2, mod);
   }
   return (base * modPow(base, exp - 1, mod)) % mod;
+};
+
+export const nilaiToIp = (nilai) => {
+  if (nilai == "A") {
+    return 4;
+  } else if (nilai == "AB") {
+    return 3.5;
+  } else if (nilai == "B") {
+    return 3;
+  } else if (nilai == "BC") {
+    return 2.5;
+  } else if (nilai == "C") {
+    return 2;
+  } else if (nilai == "D") {
+    return 1;
+  } else {
+    return 0;
+  }
 };
