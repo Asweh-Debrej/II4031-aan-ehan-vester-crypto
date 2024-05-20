@@ -23,28 +23,25 @@ import { Link } from "@nextui-org/react";
 
 export default function TranscriptTable({ data }) {
   // list all courses
-  const courses = Array.from(
-    new Set(
-      data.map((d) =>
-        d.courses
-          .map((c) => {
-            return { name: c.name, code: c.code };
-          })
-          .flat()
-      )
+  const courses = data
+    .map((d) =>
+      d.courses.map((c) => {
+        return { name: c.name, code: c.code };
+      })
     )
-  );
+    .flat()
+    .filter((c, i, self) => self.findIndex((t) => t.code === c.code) === i);
+
+  console.log(courses);
 
   return (
     <Table>
       <TableHeader>
-        <TableRow>
-          <TableColumn>Student ID</TableColumn>
-          <TableColumn>Name</TableColumn>
-          {courses.map((c, i) => (
-            <TableColumn key={i}>{c.code}</TableColumn>
-          ))}
-        </TableRow>
+        <TableColumn>Student ID</TableColumn>
+        <TableColumn>Name</TableColumn>
+        {courses.map((c, i) => (
+          <TableColumn key={i}>{c.code}</TableColumn>
+        ))}
       </TableHeader>
       <TableBody>
         {data.map((d, i) => (
