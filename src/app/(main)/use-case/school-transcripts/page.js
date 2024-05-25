@@ -1,15 +1,10 @@
-import { example } from "./data";
+import TranscriptsForm from "./transcript-form";
 
-import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
-
-import TranscriptTable from "./transcript-table";
-
-export default async function SchoolTranscripts() {
+export default function SchoolTranscripts() {
   return (
-    <div className="flex flex-col items-center justify-center h-full">
-      <h1 className="text-3xl font-bold">School Transcripts</h1>
-      <TranscriptTable data={example} />
+    <div className="flex flex-col items-center mx-auto h-full max-w-7xl p-4 gap-4">
+      <p className="text-3xl font-bold">School Transcripts</p>
+      <TranscriptsForm />
     </div>
   );
 }
-
