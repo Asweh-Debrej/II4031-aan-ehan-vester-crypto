@@ -30,47 +30,26 @@ export default function DecryptTranscript() {
     return new Blob([arrayBuffer], { type });
   }
 
-  async function encryptPDFBlob(pdfBlob, key) {
-    try {
-      const arrayBuffer = await blobToArrayBuffer(pdfBlob);
-      const bytes = new Uint8Array(arrayBuffer);
-      if (key.length !== 16 && key.length !== 24 && key.length !== 32) {
-        throw new Error(
-          "Invalid key length. Key must be 16, 24, or 32 bytes long."
-        );
-      }
-      const paddedBytes = aesjs.padding.pkcs7.pad(bytes);
-      const aesEcb = new aesjs.ModeOfOperation.ecb(key);
-      const encryptedBytes = aesEcb.encrypt(paddedBytes);
-      const encryptedArrayBuffer = encryptedBytes.buffer;
-      const encryptedBlob = arrayBufferToBlob(
-        encryptedArrayBuffer,
-        pdfBlob.type
-      );
-      return encryptedBlob;
-    } catch (error) {
-      console.error("PDF encryption failed:", error);
-      throw error;
-    }
-  }
+  const padKey = (key) => {
+    const paddingChar = "x"; // You can use any character you prefer
+    const keyLength = key.length;
+    const padLength = 16 - (keyLength % 16);
+    const paddedKey = key + paddingChar.repeat(padLength);
+    return paddedKey;
+  };
 
   async function decryptPDFBlob(encryptedBlob, key) {
     try {
       const arrayBuffer = await blobToArrayBuffer(encryptedBlob);
       const bytes = new Uint8Array(arrayBuffer);
       if (key.length !== 16 && key.length !== 24 && key.length !== 32) {
-        throw new Error(
-          "Invalid key length. Key must be 16, 24, or 32 bytes long."
-        );
+        throw new Error("Invalid key length. Key must be 16, 24, or 32 bytes long.");
       }
       const aesEcb = new aesjs.ModeOfOperation.ecb(key);
       const decryptedBytes = aesEcb.decrypt(bytes);
       const unpaddedBytes = aesjs.padding.pkcs7.strip(decryptedBytes);
       const decryptedArrayBuffer = unpaddedBytes.buffer;
-      const decryptedBlob = arrayBufferToBlob(
-        decryptedArrayBuffer,
-        encryptedBlob.type
-      );
+      const decryptedBlob = arrayBufferToBlob(decryptedArrayBuffer, encryptedBlob.type);
       return decryptedBlob;
     } catch (error) {
       console.error("PDF decryption failed:", error);
@@ -78,41 +57,32 @@ export default function DecryptTranscript() {
     }
   }
 
-  const onSubmitHandler = () => {
-    if (!key) {
-      alert("Key is required");
-      return;
-    }
+  const onSubmitHandler = async () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
         const encryptedBlob = new Blob([reader.result], { type: file.type });
-        const key = aesjs.utils.utf8.toBytes("examplekey123456");
-        decryptPDFBlob(encryptedBlob, key)
+        const paddedKey = aesjs.utils.utf8.toBytes(padKey(key));
+        decryptPDFBlob(encryptedBlob, paddedKey)
           .then((decryptedBlob) => {
             console.log("Decrypted Blob:", decryptedBlob);
             saveAs(decryptedBlob, `Decrypted_${file.name}.pdf`);
           })
           .catch((error) => {
             console.error("PDF decryption failed:", error);
+            alert("Your key is wrong.");
           });
       };
       reader.readAsArrayBuffer(file);
-    } else {
-      alert("File is required");
-      return;
     }
   };
+
   return (
     <div className="flex flex-col items-center gap-4 w-fit max-w-full">
       <p>{`Upload yout encrypted transcript and decrypt using AES.`}</p>
       <div className="flex flex-row gap-4 items-center mx-auto">
         <Input type="file" onChange={handleFileChange} />
-        <Input
-          label="Key"
-          className="w-[200px]"
-          onValueChange={(val) => setKey(val)}
-        />
+        <Input label="Key" className="w-[200px]" onValueChange={(val) => setKey(val)} />
         <Button color="primary" className="w-[160px]" onClick={onSubmitHandler}>
           Decrypt
         </Button>

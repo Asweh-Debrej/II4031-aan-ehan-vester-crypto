@@ -81,7 +81,8 @@ export default function TranscriptsForm() {
       <Divider orientation="horizontal" className="w-full" />
       <p className="text-2xl font-bold">Step 7: Decrypt Your Transcript</p>
       <DecryptTranscript />
-      <p className="text-2xl font-bold">End</p>
+      <Spacer y={16} />
+      <Divider orientation="horizontal" className="w-full" />
     </>
   );
 }
