@@ -35,13 +35,18 @@ export default function DecryptTranscript() {
       const arrayBuffer = await blobToArrayBuffer(pdfBlob);
       const bytes = new Uint8Array(arrayBuffer);
       if (key.length !== 16 && key.length !== 24 && key.length !== 32) {
-        throw new Error("Invalid key length. Key must be 16, 24, or 32 bytes long.");
+        throw new Error(
+          "Invalid key length. Key must be 16, 24, or 32 bytes long."
+        );
       }
       const paddedBytes = aesjs.padding.pkcs7.pad(bytes);
       const aesEcb = new aesjs.ModeOfOperation.ecb(key);
       const encryptedBytes = aesEcb.encrypt(paddedBytes);
       const encryptedArrayBuffer = encryptedBytes.buffer;
-      const encryptedBlob = arrayBufferToBlob(encryptedArrayBuffer, pdfBlob.type);
+      const encryptedBlob = arrayBufferToBlob(
+        encryptedArrayBuffer,
+        pdfBlob.type
+      );
       return encryptedBlob;
     } catch (error) {
       console.error("PDF encryption failed:", error);
@@ -54,13 +59,18 @@ export default function DecryptTranscript() {
       const arrayBuffer = await blobToArrayBuffer(encryptedBlob);
       const bytes = new Uint8Array(arrayBuffer);
       if (key.length !== 16 && key.length !== 24 && key.length !== 32) {
-        throw new Error("Invalid key length. Key must be 16, 24, or 32 bytes long.");
+        throw new Error(
+          "Invalid key length. Key must be 16, 24, or 32 bytes long."
+        );
       }
       const aesEcb = new aesjs.ModeOfOperation.ecb(key);
       const decryptedBytes = aesEcb.decrypt(bytes);
       const unpaddedBytes = aesjs.padding.pkcs7.strip(decryptedBytes);
       const decryptedArrayBuffer = unpaddedBytes.buffer;
-      const decryptedBlob = arrayBufferToBlob(decryptedArrayBuffer, encryptedBlob.type);
+      const decryptedBlob = arrayBufferToBlob(
+        decryptedArrayBuffer,
+        encryptedBlob.type
+      );
       return decryptedBlob;
     } catch (error) {
       console.error("PDF decryption failed:", error);
@@ -92,19 +102,22 @@ export default function DecryptTranscript() {
       alert("File is required");
       return;
     }
-
-    return (
-      <div className="flex flex-col items-center gap-4 w-fit max-w-full">
-        <p>{`Upload yout encrypted transcript and decrypt using AES.`}</p>
-        <div className="flex flex-row gap-4 items-center mx-auto">
-          <Input type="file" onChange={handleFileChange} />
-          <Input label="Key" className="w-[200px]" onValueChange={(val) => setKey(val)} />
-          <Button color="primary" className="w-[160px]" onClick={onSubmitHandler}>
-            Decrypt
-          </Button>
-        </div>
-        <p>{`The decrypted PDF file will be downloaded automaticaly`}</p>
-      </div>
-    );
   };
+  return (
+    <div className="flex flex-col items-center gap-4 w-fit max-w-full">
+      <p>{`Upload yout encrypted transcript and decrypt using AES.`}</p>
+      <div className="flex flex-row gap-4 items-center mx-auto">
+        <Input type="file" onChange={handleFileChange} />
+        <Input
+          label="Key"
+          className="w-[200px]"
+          onValueChange={(val) => setKey(val)}
+        />
+        <Button color="primary" className="w-[160px]" onClick={onSubmitHandler}>
+          Decrypt
+        </Button>
+      </div>
+      <p>{`The decrypted PDF file will be downloaded automaticaly`}</p>
+    </div>
+  );
 }
