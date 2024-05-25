@@ -14,6 +14,8 @@ import SubmitDatabase from "./submit-database";
 import RetrieveDatabase from "./retrieve-database";
 import DecryptField from "./decrypt-field";
 import HashValidate from "./hash-validate";
+import DownloadTranscript from "./download-transcript";
+import DecryptTranscript from "./decrypt-transcript";
 
 export default function TranscriptsForm() {
   const [studentData, setStudentData] = useState(null);
@@ -53,15 +55,11 @@ export default function TranscriptsForm() {
       <EncryptSignature hash={hash} onSign={onHashSign} />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
-      <p className="text-2xl font-bold">
-        Step 1.4: Encrypt Each Transcript Field
-      </p>
+      <p className="text-2xl font-bold">Step 1.4: Encrypt Each Transcript Field</p>
       <EncryptField studentData={signedStudentData} />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
-      <p className="text-2xl font-bold">
-        Step 2: Submit Your Data To Our Database
-      </p>
+      <p className="text-2xl font-bold">Step 2: Submit Your Data To Our Database</p>
       <SubmitDatabase databaseData={example} />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
@@ -75,6 +73,15 @@ export default function TranscriptsForm() {
       <Divider orientation="horizontal" className="w-full" />
       <p className="text-2xl font-bold">Step 5: Validate Hash</p>
       <HashValidate currentStudentData={decryptedData} />
+      <Spacer y={16} />
+      <Divider orientation="horizontal" className="w-full" />
+      <p className="text-2xl font-bold">Step 6: Download Your Transcript</p>
+      <DownloadTranscript studentData={selectedData} />
+      <Spacer y={16} />
+      <Divider orientation="horizontal" className="w-full" />
+      <p className="text-2xl font-bold">Step 7: Decrypt Your Transcript</p>
+      <DecryptTranscript />
+      <p className="text-2xl font-bold">End</p>
     </>
   );
 }
