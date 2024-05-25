@@ -11,8 +11,8 @@ import ProgressBar from "./progress-bar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "AEC | Aan Ehan Cipher",
-  description: "Aan Ehan Cipher is a simple web app to encrypt and decrypt text using various ciphers. It is built using Next.js and Tailwind CSS.",
+  title: "VAR-C | Vester Aan Rehan - Cipher",
+  description: "Vester Aan Rehan - Sign is a simple web app to encrypt and decrypt text using various ciphers. It is built using Next.js and Tailwind CSS.",
 };
 
 export default function RootLayout({ children }) {
