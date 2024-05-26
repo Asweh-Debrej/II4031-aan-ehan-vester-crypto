@@ -120,5 +120,3 @@ export function sha3_256(message) {
 
   return hash;
 }
-
-console.log("test");

@@ -1,18 +1,54 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-import { Button, Spacer } from "@nextui-org/react";
+import { Button, Spacer, Input } from "@nextui-org/react";
 import TranscriptTable from "./transcript-table";
 
 import { getData } from "./data";
+import { set } from "lodash";
 
-export default function RetrieveDatabase({ defaultData = null, onRetrieve = (data) => {}}) {
+const studentsPerPage = 10;
+
+export default function RetrieveDatabase({
+  defaultData = null,
+  onRetrieve = (data) => {},
+}) {
   const [databaseData, setDatabaseData] = useState([]);
   const [selectedData, setSelectedData] = useState(null);
   const [retrievedData, setRetrievedData] = useState(null);
+  const [pageCount, setPageCount] = useState(1);
+  const filterOptions = useRef({
+    codeFilter: "",
+    page: 1,
+    itemsPerPage: studentsPerPage,
+  });
+  const [isFetching, setIsFetching] = useState(true);
 
   const dataReady = Boolean(databaseData.length);
+
+  const fetchData = (options) => {
+    const { codeFilter = "", page = 1 } = options || {};
+
+    setIsFetching(true);
+
+    getData({ codeFilter, page, itemsPerPage: studentsPerPage })
+      .then((res) => {
+        if (!res.ok) {
+          alert(res.error);
+          return;
+        }
+
+        setDatabaseData(res.data.students || []);
+        setIsFetching(false);
+        setPageCount(Math.ceil(res.data.total / studentsPerPage) || 1);
+      })
+      .catch((e) => {
+        console.error(e);
+        setIsFetching(false);
+        alert("Error fetching data from database");
+      });
+  };
 
   const onLoadFromStep14 = () => {
     if (!defaultData) {
@@ -38,14 +74,36 @@ export default function RetrieveDatabase({ defaultData = null, onRetrieve = (dat
     setSelectedData(data);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getData();
-      setDatabaseData(data);
-    };
+  useEffect(fetchData, []);
 
-    fetchData();
-  }, []);
+  // timer
+  const timer = useRef(null);
+  const onOptionsChange = (options) => {
+    filterOptions.current = options;
+    setIsFetching(true);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => fetchData(options), 700);
+  };
+
+  const topTableContent = (
+    <div className="flex flex-row gap-4 items-center ml-auto px-4">
+      <Input
+        label="NIM Filter"
+        className="w-[240px]"
+        onValueChange={(val) =>
+          onOptionsChange({ ...filterOptions.current, codeFilter: val })
+        }
+        size="sm"
+      />
+      <Button
+        onClick={() => fetchData(filterOptions.current)}
+        color="primary"
+        className="font-bold w-[160px] ml-auto"
+        size="md">
+        Refresh Data
+      </Button>
+    </div>
+  );
 
   return (
     <div className="flex flex-col items-center gap-4 max-w-full">
@@ -53,9 +111,15 @@ export default function RetrieveDatabase({ defaultData = null, onRetrieve = (dat
       <p>{`Select the student data you want to retrieve`}</p>
       <TranscriptTable
         data={databaseData}
-        isLoading={!dataReady}
+        isLoading={isFetching}
         selectionMode
         onSelect={onSelectData}
+        showPagination
+        totalPages={pageCount}
+        topContent={topTableContent}
+        onPageChange={(page) =>
+          onOptionsChange({ ...filterOptions.current, page })
+        }
       />
       <div className="flex flex-row gap-4 items-center ml-auto">
         <p>You can also load data from step 1.4</p>

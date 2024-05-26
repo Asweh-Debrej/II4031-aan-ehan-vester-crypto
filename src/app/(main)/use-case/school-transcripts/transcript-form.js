@@ -23,6 +23,7 @@ export default function TranscriptsForm() {
   const [signedHash, setSignedHash] = useState(null);
   const [rsaPublicKeys, setRsaPublicKeys] = useState(null);
   const [signedStudentData, setSignedStudentData] = useState(null);
+  const [encryptedData, setEncryptedData] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [decryptedData, setDecryptedData] = useState(null);
 
@@ -55,16 +56,26 @@ export default function TranscriptsForm() {
       <EncryptSignature hash={hash} onSign={onHashSign} />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
-      <p className="text-2xl font-bold">Step 1.4: Encrypt Each Transcript Field</p>
-      <EncryptField studentData={signedStudentData} />
+      <p className="text-2xl font-bold">
+        Step 1.4: Encrypt Each Transcript Field
+      </p>
+      <EncryptField
+        studentData={signedStudentData}
+        onEncrypt={setEncryptedData}
+      />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
-      <p className="text-2xl font-bold">Step 2: Submit Your Data To Our Database</p>
-      <SubmitDatabase databaseData={example} />
+      <p className="text-2xl font-bold">
+        Step 2: Submit Your Data To Our Database
+      </p>
+      <SubmitDatabase encryptedData={encryptedData} />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
       <p className="text-2xl font-bold">Step 3: Retrieve Your Student Data</p>
-      <RetrieveDatabase defaultData={signedStudentData} onRetrieve={setSelectedData} />
+      <RetrieveDatabase
+        defaultData={signedStudentData}
+        onRetrieve={setSelectedData}
+      />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
       <p className="text-2xl font-bold">Step 4: Decrypt Your Data</p>

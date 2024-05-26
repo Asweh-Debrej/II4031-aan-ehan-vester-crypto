@@ -31,13 +31,18 @@ export default function DownloadTranscript({ studentData = null }) {
       const arrayBuffer = await blobToArrayBuffer(pdfBlob);
       const bytes = new Uint8Array(arrayBuffer);
       if (key.length !== 16 && key.length !== 24 && key.length !== 32) {
-        throw new Error("Invalid key length. Key must be 16, 24, or 32 bytes long.");
+        throw new Error(
+          "Invalid key length. Key must be 16, 24, or 32 bytes long."
+        );
       }
       const paddedBytes = aesjs.padding.pkcs7.pad(bytes);
       const aesEcb = new aesjs.ModeOfOperation.ecb(key);
       const encryptedBytes = aesEcb.encrypt(paddedBytes);
       const encryptedArrayBuffer = encryptedBytes.buffer;
-      const encryptedBlob = arrayBufferToBlob(encryptedArrayBuffer, pdfBlob.type);
+      const encryptedBlob = arrayBufferToBlob(
+        encryptedArrayBuffer,
+        pdfBlob.type
+      );
       return encryptedBlob;
     } catch (error) {
       console.error("PDF encryption failed:", error);
@@ -50,13 +55,18 @@ export default function DownloadTranscript({ studentData = null }) {
       const arrayBuffer = await blobToArrayBuffer(encryptedBlob);
       const bytes = new Uint8Array(arrayBuffer);
       if (key.length !== 16 && key.length !== 24 && key.length !== 32) {
-        throw new Error("Invalid key length. Key must be 16, 24, or 32 bytes long.");
+        throw new Error(
+          "Invalid key length. Key must be 16, 24, or 32 bytes long."
+        );
       }
       const aesEcb = new aesjs.ModeOfOperation.ecb(key);
       const decryptedBytes = aesEcb.decrypt(bytes);
       const unpaddedBytes = aesjs.padding.pkcs7.strip(decryptedBytes);
       const decryptedArrayBuffer = unpaddedBytes.buffer;
-      const decryptedBlob = arrayBufferToBlob(decryptedArrayBuffer, encryptedBlob.type);
+      const decryptedBlob = arrayBufferToBlob(
+        decryptedArrayBuffer,
+        encryptedBlob.type
+      );
       return decryptedBlob;
     } catch (error) {
       console.error("PDF decryption failed:", error);
@@ -68,7 +78,9 @@ export default function DownloadTranscript({ studentData = null }) {
     const doc = new jsPDF();
     doc.setFontSize(12);
     const pageWidth = doc.internal.pageSize.getWidth();
-    const textWidth = (doc.getStringUnitWidth(text) * doc.internal.getFontSize()) / doc.internal.scaleFactor;
+    const textWidth =
+      (doc.getStringUnitWidth(text) * doc.internal.getFontSize()) /
+      doc.internal.scaleFactor;
     const textX = (pageWidth - textWidth) / 2;
     return textX;
   };
@@ -84,10 +96,22 @@ export default function DownloadTranscript({ studentData = null }) {
       doc.text("--------------------------------------------", 10, 25);
 
       doc.text("Transkrip Akademik", alignCenter("Transkrip Akademik"), 40);
-      doc.text(`Nama: ${student.name}`, alignCenter(`Nama: ${student.name}`), 50);
+      doc.text(
+        `Nama: ${student.name}`,
+        alignCenter(`Nama: ${student.name}`),
+        50
+      );
       doc.text(`NIM: ${student.nim}`, alignCenter(`NIM: ${student.nim}`), 55);
 
-      const body = Array.isArray(student.courses) ? student.courses.map((course, index) => [index + 1, course.code, course.name, course.grade, course.credit]) : [];
+      const body = Array.isArray(student.courses)
+        ? student.courses.map((course, index) => [
+            index + 1,
+            course.code,
+            course.name,
+            course.grade,
+            course.credit,
+          ])
+        : [];
 
       let totalSKS = 0;
       const uhuy = Array.isArray(student.courses)
@@ -111,8 +135,16 @@ export default function DownloadTranscript({ studentData = null }) {
         body: body,
       });
 
-      doc.text(`Total Jumlah SKS = ${totalSKS}`, alignCenter(`Total Jumlah SKS = ${totalSKS}`), 180);
-      doc.text(`IPK = ${student.gpa}`, alignCenter(`IPK = ${student.gpa}`), 185);
+      doc.text(
+        `Total Jumlah SKS = ${totalSKS}`,
+        alignCenter(`Total Jumlah SKS = ${totalSKS}`),
+        180
+      );
+      doc.text(
+        `IPK = ${student.gpa}`,
+        alignCenter(`IPK = ${student.gpa}`),
+        185
+      );
 
       doc.text("Ketua Program Studi", 10, 210);
       doc.text("--Begin signature--", 10, 220);
@@ -141,7 +173,7 @@ export default function DownloadTranscript({ studentData = null }) {
       //const key = aesjs.utils.utf8.toBytes("examplekey123456");
 
       const paddedKey = aesjs.utils.utf8.toBytes(padKey(key));
-      console.log({ paddedKey });
+      // console.log({ paddedKey });
       const encryptedBlob = await encryptPDFBlob(pdfBlob, paddedKey);
       const decryptedBlob = await decryptPDFBlob(encryptedBlob, paddedKey);
       saveAs(encryptedBlob, `Encrypted_Transkrip_${student.name}.pdf`);
@@ -171,7 +203,11 @@ export default function DownloadTranscript({ studentData = null }) {
     <div className="flex flex-col items-center gap-4 w-fit max-w-full">
       <p>{`Using AES decryption, you can download encrypted transcript file`}</p>
       <div className="flex flex-row gap-4 items-center mx-auto">
-        <Input label="Key" className="w-[200px]" onValueChange={(val) => setKey(val)} />
+        <Input
+          label="Key"
+          className="w-[200px]"
+          onValueChange={(val) => setKey(val)}
+        />
         <Button color="primary" className="w-[160px]" onClick={onSubmitHandler}>
           Download Transcript
         </Button>

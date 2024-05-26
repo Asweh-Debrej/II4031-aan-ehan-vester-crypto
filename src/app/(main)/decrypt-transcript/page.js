@@ -45,7 +45,6 @@ const UploadPage = () => {
         //const hardcodedKey = aesjs.utils.utf8.toBytes("123456xxxxxxxxxx");
         decryptPDFBlob(encryptedBlob, paddedKey)
           .then((decryptedBlob) => {
-            console.log("Decrypted Blob:", decryptedBlob);
             saveAs(decryptedBlob, `Decrypted_${file.name}.pdf`);
           })
           .catch((error) => {

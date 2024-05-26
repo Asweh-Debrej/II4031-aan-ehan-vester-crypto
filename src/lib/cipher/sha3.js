@@ -112,10 +112,10 @@ function sha3_256(message) {
   // absorb
   for (let i = 0; i < message.length; i += r) {
     for (let j = 0; j < r / w; j++) {
-      console.log("state[j]: ", state[j]);
-      console.log("w: ", w);
-      console.log("typeof w: ", typeof w);
-      console.log("message[i + j]: ", BigInt(message[i + j]));
+    //   console.log("state[j]: ", state[j]);
+    //   console.log("w: ", w);
+    //   console.log("typeof w: ", typeof w);
+    //   console.log("message[i + j]: ", BigInt(message[i + j]));
       state[j] ^= BigInt.asUintN(w, BigInt(message[i + j]));
     }
     state = keccak_f(state);

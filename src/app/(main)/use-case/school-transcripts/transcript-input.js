@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 
-import { Input, Button } from "@nextui-org/react";
+import {
+  Input,
+  Button,
+  Autocomplete,
+  AutocompleteItem,
+} from "@nextui-org/react";
+
+const grades = ["A", "B", "C", "D", "E", "F"];
 
 const defaultCourseData = {
   code: "",
@@ -28,9 +35,7 @@ export default function TranscriptInput({ onSubmit }) {
     let coursesCount = 0;
     for (let i = 0; i < data.courses.length; i++) {
       const course = data.courses[i];
-      if (!course.code || !course.name || !course.grade || course.credit === 0) {
-        courses.push({ ...defaultCourseData });
-      } else {
+      if (course.code && course.name && course.grade && course.credit) {
         courses.push(course);
         coursesCount++;
       }
@@ -42,16 +47,27 @@ export default function TranscriptInput({ onSubmit }) {
     }
 
     onSubmit({ ...data, courses });
-  }
+  };
 
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="flex flex-row w-full gap-4 mb-8">
-        <Input label="Student ID" type="text" className="w-[200px]" onValueChange={(val) => setData({ ...data, nim: val })} />
-        <Input label="Student Name" type="text" className="w-[200px]" onValueChange={(val) => setData({ ...data, name: val })} />
+        <Input
+          label="Student ID"
+          type="text"
+          className="w-[200px]"
+          onValueChange={(val) => setData({ ...data, nim: val })}
+        />
+        <Input
+          label="Student Name"
+          type="text"
+          className="w-[200px]"
+          onValueChange={(val) => setData({ ...data, name: val })}
+        />
       </div>
       <p className="text-warning font-bold">
-        any incomplete or invalid row will be replaced with a dash (-) for each field
+        any incomplete or invalid row will be replaced with a dash (-) for each
+        field
       </p>
       {[...Array(10)].map((_, i) => (
         <div key={i} className="flex flex-row mx-auto gap-4 items-center">
@@ -78,7 +94,7 @@ export default function TranscriptInput({ onSubmit }) {
               setData({ ...data, courses });
             }}
           />
-          <Input
+          {/* <Input
             label="Grade"
             type="text"
             className="w-[200px]"
@@ -88,7 +104,24 @@ export default function TranscriptInput({ onSubmit }) {
               courses[i].grade = val;
               setData({ ...data, courses });
             }}
-          />
+          /> */}
+          <Autocomplete
+            label="Grade"
+            className="w-[200px]"
+            size="sm"
+            onSelectionChange={(val) => {
+              const courses = [...data.courses];
+              courses[i].grade = val;
+              setData({ ...data, courses });
+            }}
+            onKeyDown={(e) => e.continuePropagation()}
+            items={grades}>
+            {grades.map((grade) => (
+              <AutocompleteItem key={grade} value={grade}>
+                {grade}
+              </AutocompleteItem>
+            ))}
+          </Autocomplete>
           <Input
             label="Credit"
             type="number"

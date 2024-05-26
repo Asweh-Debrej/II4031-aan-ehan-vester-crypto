@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   Navbar,
   NavbarContent,
@@ -16,6 +18,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  Pagination,
 } from "@nextui-org/react";
 
 export default function TranscriptTable({
@@ -25,21 +28,38 @@ export default function TranscriptTable({
   includeRC4 = false,
   isLoading = false,
   selectionMode = false,
+  showPagination = false,
+  totalPages = 1,
+  topContent = null,
+  onPageChange = (page) => {},
   onSelect = (selectedData) => {},
 }) {
-  console.log([...Array(10)].map((_, i) => i));
+  const [page, setPage] = useState(1);
+
+  const pageChangeHandler = (page) => {
+    setPage(page);
+    onPageChange(page);
+  };
 
   const tableColumns = [
     [
-      includeHash && { name: "Hash", key: "hash" },
-      includeRSA && { name: "RSA Public E", key: "rsaPublicE" },
-      includeRSA && { name: "RSA Public N", key: "rsaPublicN" },
-      includeRC4 && { name: "RC4 Key", key: "rc4Key" },
+      includeHash && { name: "Hash", key: "hash", className: "w-[200px]" },
+      includeRSA && {
+        name: "RSA Public E",
+        key: "rsaPublicE",
+        className: "w-[100px]",
+      },
+      includeRSA && {
+        name: "RSA Public N",
+        key: "rsaPublicN",
+        className: "w-[100px]",
+      },
+      includeRC4 && { name: "RC4 Key", key: "rc4Key", className: "w-[200px]" },
     ].filter(Boolean),
     {
       name: "Student ID",
       key: "nim",
-      className: "w-[100px]",
+      className: "w-[200px]",
     },
     { name: "Name", key: "name", className: "w-[200px]" },
     ...[...Array(10)].map((_, i) => {
@@ -63,28 +83,34 @@ export default function TranscriptTable({
       <TableRow key={student.nim}>
         {[
           includeHash && (
-            <TableCell>
+            <TableCell key={`hash`}>
               <p className="w-[200px] break-all break-words">{student.hash}</p>
             </TableCell>
           ),
           includeRSA && [
             <TableCell key={`rsaPublicE`}>
-              <p className="w-[200px] break-all break-words">{student.rsaPublicE}</p>
+              <p className="w-[100px] break-all break-words">
+                {student.rsaPublicE}
+              </p>
             </TableCell>,
             <TableCell key={`rsaPublicN`}>
-              <p className="w-[200px] break-all break-words">{student.rsaPublicN}</p>
+              <p className="w-[100px] break-all break-words">
+                {student.rsaPublicN}
+              </p>
             </TableCell>,
           ],
           includeRC4 && (
-            <TableCell>
-              <p className="w-[200px] break-all break-words">{student.rc4Key}</p>
+            <TableCell key={`rc4Key`}>
+              <p className="w-[200px] break-all break-words">
+                {student.rc4Key}
+              </p>
             </TableCell>
           ),
         ].filter(Boolean)}
-        <TableCell>
+        <TableCell key={`nim`}>
           <p className="w-[200px] break-all break-words">{student.nim}</p>
         </TableCell>
-        <TableCell>
+        <TableCell key={`name`}>
           <p className="w-[200px]">{student.name}</p>
         </TableCell>
         {[...Array(10)].map((_, i) => {
@@ -110,23 +136,50 @@ export default function TranscriptTable({
 
   const rows = data.map(RenderStudent);
 
+  const bottomContent = (
+    <div className="flex flex-row items-center">
+      <Pagination
+        isCompact
+        showControls
+        showShadow
+        color="secondary"
+        page={page}
+        total={totalPages}
+        onChange={pageChangeHandler}
+      />
+    </div>
+  );
+
   return (
-    <Table
-      classNames={{
-        base: "max-w-full",
-      }}
-      selectionMode={selectionMode ? "single" : "none"}
-      onSelectionChange={handleSelect}>
-      <TableHeader columns={tableColumns}>
-        {(column) => (
-          <TableColumn key={column.key} className={column.className}>
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody items={rows} isLoading={isLoading} loadingContent={<Spinner label="Loading" />}>
-        {(row) => row}
-      </TableBody>
-    </Table>
+    <div
+      className={`flex flex-col items-center gap-2 w-full mx-auto bg-neutral-900 bg-opacity-70 rounded-xl shadow-md ${
+        showPagination ? "pb-2" : ""
+      } ${
+        topContent ? "pt-2" : ""
+      } border-neutral-950 border-2 border-opacity-30`}>
+      {topContent}
+      <Table
+        classNames={{
+          base: "max-w-full",
+        }}
+        selectionMode={selectionMode ? "single" : "none"}
+        onSelectionChange={handleSelect}
+        aria-label="Transcript Table">
+        <TableHeader columns={tableColumns}>
+          {(column) => (
+            <TableColumn key={column.key}>
+              <p className={column.className}>{column.name}</p>
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody
+          items={rows}
+          isLoading={isLoading}
+          loadingContent={<Spinner label="Loading" />}>
+          {(row) => row}
+        </TableBody>
+      </Table>
+      {showPagination ? bottomContent : null}
+    </div>
   );
 }

@@ -377,12 +377,8 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
       const fileNames = fileName.split(".");
       const fileExtension = fileNames[fileNames.length - 1];
       const content = decrypted.split(",")[1];
-      console.log("decrypted", decrypted);
 
       let blob = null;
-
-      console.log("content", content);
-      console.log("fileExtension", fileExtension);
 
       if (fileNames.length > 1 && content) {
         blob = base64StringToBlob(content, fileExtension);
@@ -395,7 +391,6 @@ const MessageBox = ({ payload, clearErrors, handleError }) => {
       saveFileRef.current.href = URL.createObjectURL(blob);
       saveFileRef.current.click();
     } else if (type === "text") {
-      console.log("lewat sini");
       const blob = new Blob([decrypted], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
       saveFileRef.current.href = url;

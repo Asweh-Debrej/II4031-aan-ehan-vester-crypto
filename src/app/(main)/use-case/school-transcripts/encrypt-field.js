@@ -34,7 +34,10 @@ const encryptData = (data, RC4key, fields = []) => {
   return encryptedData;
 };
 
-export default function EncryptField({ studentData = null }) {
+export default function EncryptField({
+  studentData = null,
+  onEncrypt = (data) => {},
+}) {
   const [key, setKey] = useState("");
   const [encryptedData, setEncryptedData] = useState(null);
 
@@ -51,6 +54,7 @@ export default function EncryptField({ studentData = null }) {
 
     const encryptedData = encryptData(studentData, key, fieldsToEncrypt);
 
+    onEncrypt(encryptedData);
     setEncryptedData(encryptedData);
   };
 

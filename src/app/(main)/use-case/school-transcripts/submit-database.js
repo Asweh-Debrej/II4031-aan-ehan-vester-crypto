@@ -4,12 +4,35 @@ import { useState, useEffect } from "react";
 
 import { Button, Spacer } from "@nextui-org/react";
 import TranscriptTable from "./transcript-table";
-import { getData } from "./data";
+import { getData, addData } from "./data";
 
 export default function SubmitDatabase({ encryptedData = null }) {
   const [databaseData, setDatabaseData] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   const dataReady = Boolean(databaseData.length);
+
+  const fetchData = () => {
+    setIsFetching(true);
+
+    getData()
+      .then((res) => {
+        if (!res.ok) {
+          alert(res.error);
+          return;
+        }
+
+        setDatabaseData(res.data.students || []);
+
+        setIsFetching(false);
+      })
+      .catch((e) => {
+        console.error(e);
+        setIsFetching(false);
+        alert("Error fetching data from database");
+      });
+  };
 
   const onSubmitHandler = () => {
     if (!encryptedData) {
@@ -17,18 +40,30 @@ export default function SubmitDatabase({ encryptedData = null }) {
       return;
     }
 
-    // Submit to database
-    alert("Data submitted to database");
+    setIsSubmitting(true);
+
+    addData(encryptedData)
+      .then((res) => {
+        if (!res.ok) {
+          alert(res.message);
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (res.data) {
+          setDatabaseData([res.data, ...databaseData]);
+        }
+
+        setIsSubmitting(false);
+      })
+      .catch((e) => {
+        console.error(e);
+        alert(e.message || "Error submitting data to database");
+        setIsSubmitting(false);
+      });
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getData();
-      setDatabaseData(data);
-    };
-
-    fetchData();
-  }, []);
+  useEffect(fetchData, []);
 
   return (
     <div className="flex flex-col items-center gap-4 w-fit max-w-full">
@@ -42,13 +77,13 @@ export default function SubmitDatabase({ encryptedData = null }) {
       <Button
         onClick={onSubmitHandler}
         color="warning"
-        className="font-bold w-[200px]"
+        className="font-bold w-[240px]"
         size="lg">
         Submit to Database
       </Button>
       <Spacer y={4} />
-      <p>{`The data stored in the database is shown below`}</p>
-      <TranscriptTable data={databaseData} isLoading={!dataReady} />
+      <p>{`The data stored in the database will look like below`}</p>
+      <TranscriptTable data={databaseData} isLoading={isSubmitting} />
     </div>
   );
 }

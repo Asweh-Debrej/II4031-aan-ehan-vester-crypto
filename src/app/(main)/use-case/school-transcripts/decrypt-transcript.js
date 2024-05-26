@@ -65,7 +65,6 @@ export default function DecryptTranscript() {
         const paddedKey = aesjs.utils.utf8.toBytes(padKey(key));
         decryptPDFBlob(encryptedBlob, paddedKey)
           .then((decryptedBlob) => {
-            console.log("Decrypted Blob:", decryptedBlob);
             saveAs(decryptedBlob, `Decrypted_${file.name}.pdf`);
           })
           .catch((error) => {
