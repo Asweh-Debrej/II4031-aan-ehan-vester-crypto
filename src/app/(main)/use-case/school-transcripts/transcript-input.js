@@ -2,14 +2,9 @@
 
 import { useState } from "react";
 
-import {
-  Input,
-  Button,
-  Autocomplete,
-  AutocompleteItem,
-} from "@nextui-org/react";
+import { Input, Button, Autocomplete, AutocompleteItem } from "@nextui-org/react";
 
-const grades = ["A", "B", "C", "D", "E", "F"];
+const grades = ["A", "AB", "B", "BC", "C", "D"];
 
 const defaultCourseData = {
   code: "",
@@ -52,23 +47,10 @@ export default function TranscriptInput({ onSubmit }) {
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="flex flex-row w-full gap-4 mb-8">
-        <Input
-          label="Student ID"
-          type="text"
-          className="w-[200px]"
-          onValueChange={(val) => setData({ ...data, nim: val })}
-        />
-        <Input
-          label="Student Name"
-          type="text"
-          className="w-[200px]"
-          onValueChange={(val) => setData({ ...data, name: val })}
-        />
+        <Input label="Student ID" type="text" className="w-[200px]" onValueChange={(val) => setData({ ...data, nim: val })} />
+        <Input label="Student Name" type="text" className="w-[200px]" onValueChange={(val) => setData({ ...data, name: val })} />
       </div>
-      <p className="text-warning font-bold">
-        any incomplete or invalid row will be replaced with a dash (-) for each
-        field
-      </p>
+      <p className="text-warning font-bold">any incomplete or invalid row will be replaced with a dash (-) for each field</p>
       {[...Array(10)].map((_, i) => (
         <div key={i} className="flex flex-row mx-auto gap-4 items-center">
           <p className="mr-8 w-[120px]">Course {i + 1}:</p>
@@ -115,7 +97,8 @@ export default function TranscriptInput({ onSubmit }) {
               setData({ ...data, courses });
             }}
             onKeyDown={(e) => e.continuePropagation()}
-            items={grades}>
+            items={grades}
+          >
             {grades.map((grade) => (
               <AutocompleteItem key={grade} value={grade}>
                 {grade}
@@ -137,15 +120,8 @@ export default function TranscriptInput({ onSubmit }) {
         </div>
       ))}
       <div className="flex flex-row gap-4 ml-auto items-center">
-        <p className="text-success font-bold">
-          the data will not be submitted to the server yet
-        </p>
-        <Button
-          auto
-          type="submit"
-          color="primary"
-          onClick={onSubmitHandler}
-          className="w-[100px]">
+        <p className="text-success font-bold">the data will not be submitted to the server yet</p>
+        <Button auto type="submit" color="primary" onClick={onSubmitHandler} className="w-[100px]">
           Create
         </Button>
       </div>

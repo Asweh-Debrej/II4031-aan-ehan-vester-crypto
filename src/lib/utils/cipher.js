@@ -97,3 +97,36 @@ export const nilaiToIp = (nilai) => {
     return 0;
   }
 };
+
+export const studentToGPA = (student) => {
+  const gradeToPoint = {
+    A: 4.0,
+    AB: 3.5,
+    B: 3.0,
+    BC: 2.5,
+    C: 2.0,
+    D: 1.0,
+    "-": 0,
+  };
+
+  let totalGradePoints = 0;
+  let totalCredits = 0;
+
+  student.courses.forEach((course) => {
+    let gradePoint = gradeToPoint[course.grade];
+    totalGradePoints += gradePoint * course.credit;
+    totalCredits += course.credit;
+  });
+
+  let gpa = totalGradePoints / totalCredits;
+  return gpa.toFixed(2);
+};
+
+export const totalCredit = (student) => {
+  let totalCredits = 0;
+
+  student.courses.forEach((course) => {
+    totalCredits += course.credit;
+  });
+  return totalCredits;
+};
