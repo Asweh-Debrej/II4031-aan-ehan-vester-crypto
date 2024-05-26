@@ -7,6 +7,7 @@ import { Input, Button } from "@nextui-org/react";
 const fieldsToHash = ["nim", "name", "courses"];
 const courseFieldsToHash = ["code", "name", "grade", "credit"];
 import { keccak256 } from "js-sha3";
+import { decrypt as rsaDecrypt } from "@/lib/cipher/rsa";
 
 const SHA3 = (message) => {
   const hashedMessage = keccak256(message);
@@ -14,7 +15,8 @@ const SHA3 = (message) => {
 };
 
 const unsignHash = (hash, publicKey) => {
-  return hash;
+  const unsignedHash = rsaDecrypt(atob(hash), publicKey);
+  return unsignedHash;
 };
 
 export default function HashValidate({ currentStudentData = null }) {
