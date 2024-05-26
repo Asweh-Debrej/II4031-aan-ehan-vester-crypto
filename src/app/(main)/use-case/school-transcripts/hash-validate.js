@@ -8,6 +8,7 @@ const fieldsToHash = ["nim", "name", "courses"];
 const courseFieldsToHash = ["code", "name", "grade", "credit"];
 import { keccak256 } from "js-sha3";
 import { decrypt as rsaDecrypt } from "@/lib/cipher/rsa";
+import { escape } from "lodash";
 
 const SHA3 = (message) => {
   const hashedMessage = keccak256(message);
@@ -15,7 +16,8 @@ const SHA3 = (message) => {
 };
 
 const unsignHash = (hash, publicKey) => {
-  const unsignedHash = rsaDecrypt(atob(hash), publicKey);
+  const unsignedHash = rsaDecrypt(decodeURIComponent(escape(atob(hash))),
+    publicKey);
   return unsignedHash;
 };
 

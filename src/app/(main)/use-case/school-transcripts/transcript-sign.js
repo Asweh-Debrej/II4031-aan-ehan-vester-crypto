@@ -7,7 +7,7 @@ import { mod, modInverse, phi, gcd, isPrime, modPow } from "@/lib/utils/cipher";
 import InputError from "@/lib/error/input-error";
 
 import { generateKeys as rsaGenKeys, encrypt } from "@/lib/cipher/rsa";
-import { set } from "lodash";
+import { set, unescape } from "lodash";
 
 const defaultRSAData = {
   p: 1,
@@ -50,7 +50,7 @@ const generateKeys = (p, q) => {
 
 const signHash = (hash, privateKey) => {
   const signedHash = encrypt(hash, privateKey);
-  return btoa(signedHash);
+  return btoa(unescape(encodeURIComponent(signedHash)));
 };
 
 export default function TranscriptSign({
