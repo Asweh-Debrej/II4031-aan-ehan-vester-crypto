@@ -175,7 +175,9 @@ export default function TranscriptTable({
         <TableBody
           items={rows}
           isLoading={isLoading}
-          loadingContent={<Spinner label="Loading" />}>
+          loadingContent={<Spinner label="Loading" />}
+          emptyContent="No rows to display."
+          >
           {(row) => row}
         </TableBody>
       </Table>

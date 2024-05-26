@@ -48,7 +48,7 @@ export const encrypt = (plaintext, publicKey) => {
     throw new InputError("Missing required input", "MissingInputError", errors);
   }
 
-  const { e, n } = publicKey;
+  const { e, n } = publicKey.e ? publicKey : { e: publicKey.d, n: publicKey.n };
   let encryptedText = "";
   for (let i = 0; i < plaintext.length; i++) {
     const charCode = plaintext.charCodeAt(i);
@@ -78,7 +78,7 @@ export const decrypt = (ciphertext, privateKey) => {
     throw new InputError("Missing required input", "MissingInputError", errors);
   }
 
-  const { d, n } = privateKey;
+  const { d, n } = privateKey.d ? privateKey : { d: privateKey.e, n: privateKey.n };
   let decryptedText = "";
   for (let i = 0; i < ciphertext.length; i++) {
     const charCode = ciphertext.charCodeAt(i);

@@ -1,3 +1,5 @@
+"use client";
+
 export const explode = (str, length = 5) => {
   return str
     .match(new RegExp(`.{1,${length}}`, "g"))
@@ -71,6 +73,9 @@ export const isPrime = (num) => {
 };
 
 export const modPow = (base, exp, mod) => {
+  if (exp < 0) {
+    return modPow(modInverse(base, mod), -exp, mod);
+  }
   if (exp == 0) {
     return 1;
   }
