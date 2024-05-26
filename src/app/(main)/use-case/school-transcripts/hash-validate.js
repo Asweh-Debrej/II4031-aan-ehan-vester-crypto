@@ -48,22 +48,37 @@ export default function HashValidate({ currentStudentData = null }) {
 
   const hashSHA3 = currentStudentData ? SHA3(JSON.stringify(dataToHash)) : null;
 
-  const matchResult = hashDatabase !== null && hashSHA3 !== null && hashDatabase === hashSHA3;
+  const matchResult =
+    hashDatabase !== null && hashSHA3 !== null && hashDatabase === hashSHA3;
 
   return (
     <div className="flex flex-col items-center gap-4 max-w-full">
-      <p className="mr-auto">
-        {`The hash stored in the database (decrypted using rsa public keys) is: `}
-        <span className="font-bold text-secondary">{currentStudentData ? hashDatabase : "null"}</span>
-      </p>
-      <p className="mr-auto">
-        {`Your hash (using SHA-3) is: `}
-        <span className="font-bold text-secondary">{currentStudentData ? hashSHA3 : "null"}</span>
-      </p>
-      <p className="mr-auto">
-        {`The result of the comparison is: `}
-        <span className={`font-bold ${matchResult ? "text-success" : "text-danger"}`}>{currentStudentData ? (matchResult ? "Match" : "No match") : "null"}</span>
-      </p>
+      <div className="flex flex-row items-center gap-4 w-full">
+        <p className="w-[480px]">
+          {`The hash in its column (decrypted using rsa public keys) is: `}
+          &nbsp;
+        </p>
+        <p className="font-bold text-secondary">
+          {currentStudentData ? hashDatabase : "null"}
+        </p>
+      </div>
+      <div className="flex flex-row items-center gap-4 w-full">
+        <p className="w-[480px]">
+          {`Your hash (step 4 fields hashed using SHA-3) is: `}
+        </p>
+        <p className="font-bold text-secondary">
+          {currentStudentData ? hashSHA3 : "null"}
+        </p>
+      </div>
+      <div className="flex flex-row items-center gap-4 w-full">
+        <p className="w-[480px]">{`The result of the comparison is: `}</p>
+        <p
+          className={`font-bold ${
+            matchResult ? "text-success" : "text-danger"
+          }`}>
+          {currentStudentData ? (matchResult ? "Match" : "No match") : "null"}
+        </p>
+      </div>
     </div>
   );
 }
