@@ -4,15 +4,14 @@ import { useState, useEffect } from "react";
 
 import { Input, Button } from "@nextui-org/react";
 import TranscriptTable from "./transcript-table";
+import { keccak256 } from "js-sha3";
 
 const SHA3 = (message) => {
-  return message;
+  const hashedMessage = keccak256(message);
+  return hashedMessage;
 };
 
-export default function TranscriptHash({
-  currentStudentData = null,
-  onHash = (hash) => {},
-}) {
+export default function TranscriptHash({ currentStudentData = null, onHash = (hash) => {} }) {
   const hashSHA3 = currentStudentData ? SHA3(JSON.stringify(currentStudentData)) : null;
 
   useEffect(() => {
@@ -25,9 +24,7 @@ export default function TranscriptHash({
       <TranscriptTable data={currentStudentData ? [currentStudentData] : []} />
       <p className="mr-auto">
         {`Your hash (using SHA-3) is: `}
-        <span className="font-bold">
-          {currentStudentData ? hashSHA3 : "null"}
-        </span>
+        <span className="font-bold">{currentStudentData ? hashSHA3 : "null"}</span>
       </p>
     </div>
   );

@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { Input, Button, Tooltip } from "@nextui-org/react";
 import { mod, modInverse, phi, gcd, isPrime, modPow } from "@/lib/utils/cipher";
+import InputError from "@/lib/error/input-error";
 
 const defaultRSAData = {
   p: 1,
@@ -19,39 +20,47 @@ const defaultRSAData = {
 };
 
 const generateKeys = (p, q) => {
-  let errors = [];
+  try {
+    let errors = [];
 
-  if (!p) {
-    errors.push({ field: "p", message: "p is required" });
-  } else if (!isPrime(p)) {
-    errors.push({ field: "p", message: "p must be a prime number" });
-  }
-
-  if (!q) {
-    errors.push({ field: "q", message: "q is required" });
-  } else if (!isPrime(q)) {
-    errors.push({ field: "q", message: "q must be a prime number" });
-  }
-
-  if (errors.length > 0) {
-    throw new InputError("Missing required input", "MissingInputError", errors);
-  }
-
-  const n = p * q;
-  const phiN = phi(p, q);
-  let e = 2;
-  while (e < phiN) {
-    if (gcd(e, phiN) === 1) {
-      break;
+    if (!p) {
+      errors.push({ field: "p", message: "p is required" });
+    } else if (!isPrime(p)) {
+      errors.push({ field: "p", message: "p must be a prime number" });
     }
-    e++;
+
+    if (!q) {
+      errors.push({ field: "q", message: "q is required" });
+    } else if (!isPrime(q)) {
+      errors.push({ field: "q", message: "q must be a prime number" });
+    }
+
+    if (errors.length > 0) {
+      throw new InputError("Missing required input", "MissingInputError", errors);
+    }
+
+    const n = p * q;
+    const phiN = phi(p, q);
+    let e = 2;
+    while (e < phiN) {
+      if (gcd(e, phiN) === 1) {
+        break;
+      }
+      e++;
+    }
+    const d = modInverse(e, phiN);
+    return { publicKey: { e, n }, privateKey: { d, n } };
+  } catch (error) {
+    alert("P or Q is invalid");
   }
-  const d = modInverse(e, phiN);
-  return { publicKey: { e, n }, privateKey: { d, n } };
 };
 
 const signHash = (hash, privateKey) => {
-  return hash;
+  try {
+    return hash;
+  } catch (error) {
+    alert("Keys are invalid");
+  }
 };
 
 export default function TranscriptSign({ hash = "null", onSign = (hash, publicKey) => {} }) {
