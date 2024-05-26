@@ -56,26 +56,16 @@ export default function TranscriptsForm() {
       <EncryptSignature hash={hash} onSign={onHashSign} />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
-      <p className="text-2xl font-bold">
-        Step 1.4: Encrypt Each Transcript Field
-      </p>
-      <EncryptField
-        studentData={signedStudentData}
-        onEncrypt={setEncryptedData}
-      />
+      <p className="text-2xl font-bold">Step 1.4: Encrypt Each Transcript Field</p>
+      <EncryptField studentData={signedStudentData} onEncrypt={setEncryptedData} />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
-      <p className="text-2xl font-bold">
-        Step 2: Submit Your Data To Our Database
-      </p>
+      <p className="text-2xl font-bold">Step 2: Submit Your Data To Our Database</p>
       <SubmitDatabase encryptedData={encryptedData} />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
       <p className="text-2xl font-bold">Step 3: Retrieve Your Student Data</p>
-      <RetrieveDatabase
-        defaultData={signedStudentData}
-        onRetrieve={setSelectedData}
-      />
+      <RetrieveDatabase defaultData={signedStudentData} onRetrieve={setSelectedData} />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
       <p className="text-2xl font-bold">Step 4: Decrypt Your Data</p>
@@ -87,7 +77,7 @@ export default function TranscriptsForm() {
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
       <p className="text-2xl font-bold">Step 6: Download Your Transcript</p>
-      <DownloadTranscript studentData={selectedData} />
+      <DownloadTranscript studentData={decryptedData} />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
       <p className="text-2xl font-bold">Step 7: Decrypt Your Transcript</p>
