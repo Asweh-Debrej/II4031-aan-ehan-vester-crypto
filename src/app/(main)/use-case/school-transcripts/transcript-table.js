@@ -57,7 +57,7 @@ export default function TranscriptTable({
       includeRC4 && { name: "RC4 Key", key: "rc4Key", className: "w-[200px]" },
     ].filter(Boolean),
     {
-      name: "Student ID",
+      name: "Student NIM",
       key: "nim",
       className: "w-[200px]",
     },
