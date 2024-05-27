@@ -6,10 +6,15 @@ import { Input, Button } from "@nextui-org/react";
 
 import TranscriptTable from "./transcript-table";
 
-const fieldsToEncrypt = ["name", "course", "gpa", "signature"];
+import { encrypt } from "@/lib/cipher/rc4";
+import { toBase64 } from "js-base64";
+
+const fieldsToEncrypt = ["name", "courses", "gpa", "hash"];
 
 const encryptRC4 = (message, key) => {
-  return message;
+  const encrypted = encrypt(message, key);
+  const base64 = toBase64(encrypted);
+  return base64;
 };
 
 const encryptData = (data, RC4key, fields = []) => {
@@ -20,12 +25,10 @@ const encryptData = (data, RC4key, fields = []) => {
       continue;
     }
 
-    if (typeof data[key] === "string") {
-      encryptedData[key] = encryptRC4(data[key], RC4key);
-    } else if (typeof data[key] === "object") {
-      encryptedData[key] = encryptData(data[key], key, []);
-    } else if (typeof data[key] === "array") {
-      encryptedData[key] = data[key].map((item) => encryptData(item, key));
+    if (data[key] instanceof Array) {
+      encryptedData[key] = data[key].map((item) => encryptData(item, RC4key, []));
+    } else if (data[key] instanceof Object) {
+      encryptedData[key] = encryptData(data[key], RC4key, fields);
     } else {
       encryptedData[key] = encryptRC4(data[key], RC4key);
     }

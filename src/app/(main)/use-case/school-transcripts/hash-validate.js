@@ -10,13 +10,15 @@ import { keccak256 } from "js-sha3";
 import { decrypt as rsaDecrypt } from "@/lib/cipher/rsa";
 import { escape } from "lodash";
 
+import { fromBase64 } from "js-base64";
+
 const SHA3 = (message) => {
   const hashedMessage = keccak256(message);
   return hashedMessage;
 };
 
 const unsignHash = (hash, publicKey) => {
-  const unsignedHash = rsaDecrypt(decodeURIComponent(escape(atob(hash))),
+  const unsignedHash = rsaDecrypt(fromBase64(hash),
     publicKey);
   return unsignedHash;
 };

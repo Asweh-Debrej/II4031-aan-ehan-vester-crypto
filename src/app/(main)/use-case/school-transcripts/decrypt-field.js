@@ -5,35 +5,44 @@ import { useState, useEffect } from "react";
 import { Button, Input } from "@nextui-org/react";
 import TranscriptTable from "./transcript-table";
 
-const fieldsToEncrypt = ["name", "course", "gpa", "signature"];
+import { decrypt } from "@/lib/cipher/rc4";
+import { fromBase64 } from "js-base64";
+
+const fieldsToDecrypt = ["name", "courses", "gpa", "hash"];
 
 const decryptRC4 = (message, key) => {
-  return message;
-}
+  const stringified = fromBase64(message);
+  const decrypted = decrypt(stringified, key);
+  console.log("decrypted", stringified, "           using key", key, "           result is ", decrypted);
+  // console.log("from base64", message, "           result is ", stringified);
+  return decrypted;
+};
 
-const decryptData = (data, key) => {
+const decryptData = (data, rc4Key, fields = []) => {
   let decryptedData = {};
   for (let key in data) {
-    if (!fieldsToEncrypt.includes(key) && fieldsToEncrypt.length) {
+    if (!fields.includes(key) && fields.length) {
       decryptedData[key] = data[key];
       continue;
     }
 
-    if (typeof data[key] === "string") {
-      decryptedData[key] = decryptRC4(data[key], key);
-    } else if (typeof data[key] === "object") {
-      decryptedData[key] = decryptData(data[key], key);
-    } else if (typeof data[key] === "array") {
-      decryptedData[key] = data[key].map((item) => decryptData(item, key));
+    if (data[key] instanceof Array) {
+      decryptedData[key] = data[key].map((item) => decryptData(item, rc4Key, []));
+    } else if (data[key] instanceof Object) {
+      decryptedData[key] = decryptData(data[key], rc4Key, fields);
     } else {
-      decryptedData[key] = decryptRC4(data[key], key);
+      decryptedData[key] = decryptRC4(data[key], rc4Key);
     }
   }
 
   return decryptedData;
-}
+};
 
-export default function DecryptField({ studentData = null, onDecrypt = (data) => {}}) {
+export default function DecryptField({
+  studentData = null,
+  onDecrypt = (data) => {},
+}) {
+  console.log("studentData", studentData);
   const [key, setKey] = useState("");
   const [decrypted, setDecrypted] = useState(null);
 
@@ -48,7 +57,7 @@ export default function DecryptField({ studentData = null, onDecrypt = (data) =>
       return;
     }
 
-    const decryptedData = decryptData(studentData, key);
+    const decryptedData = decryptData(studentData, key, fieldsToDecrypt);
 
     setDecrypted(decryptedData);
     onDecrypt(decryptedData);
@@ -66,17 +75,11 @@ export default function DecryptField({ studentData = null, onDecrypt = (data) =>
           className="w-[200px]"
           onValueChange={(val) => setKey(val)}
         />
-        <Button
-          color="primary"
-          className="w-[160px]"
-          onClick={onSubmitHandler}
-        >
+        <Button color="primary" className="w-[160px]" onClick={onSubmitHandler}>
           Decrypt
         </Button>
       </div>
-      <p>
-        {`Decrypted data will be shown in the table below`}
-      </p>
+      <p>{`Decrypted data will be shown in the table below`}</p>
       <TranscriptTable data={decrypted ? [decrypted] : []} includeHash />
     </div>
   );

@@ -10,7 +10,7 @@ const defaultCourseData = {
   code: "",
   name: "",
   grade: "",
-  credit: 0,
+  credit: "",
 };
 
 export default function TranscriptInput({ onSubmit }) {
@@ -113,7 +113,7 @@ export default function TranscriptInput({ onSubmit }) {
             defaultValue="0"
             onValueChange={(val) => {
               const courses = [...data.courses];
-              courses[i].credit = parseInt(val);
+              courses[i].credit = val.toString();
               setData({ ...data, courses });
             }}
           />

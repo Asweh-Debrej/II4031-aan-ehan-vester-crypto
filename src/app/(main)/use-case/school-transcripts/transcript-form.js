@@ -65,7 +65,7 @@ export default function TranscriptsForm() {
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
       <p className="text-2xl font-bold">Step 3: Retrieve Your Student Data</p>
-      <RetrieveDatabase defaultData={signedStudentData} onRetrieve={setSelectedData} />
+      <RetrieveDatabase defaultData={encryptedData} onRetrieve={setSelectedData} />
       <Spacer y={16} />
       <Divider orientation="horizontal" className="w-full" />
       <p className="text-2xl font-bold">Step 4: Decrypt Your Data</p>

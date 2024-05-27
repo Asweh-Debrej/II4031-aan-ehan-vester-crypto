@@ -1,13 +1,14 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
-import { Input, Button, Tooltip } from "@nextui-org/react";
-import { mod, modInverse, phi, gcd, isPrime, modPow } from "@/lib/utils/cipher";
+import { Input, Button } from "@nextui-org/react";
+import { modInverse, phi, gcd, isPrime } from "@/lib/utils/cipher";
 import InputError from "@/lib/error/input-error";
 
 import { generateKeys as rsaGenKeys, encrypt } from "@/lib/cipher/rsa";
-import { set, unescape } from "lodash";
+
+import { toBase64 } from "js-base64";
 
 const defaultRSAData = {
   p: 1,
@@ -50,7 +51,8 @@ const generateKeys = (p, q) => {
 
 const signHash = (hash, privateKey) => {
   const signedHash = encrypt(hash, privateKey);
-  return btoa(unescape(encodeURIComponent(signedHash)));
+  const base64 = toBase64(signedHash);
+  return base64;
 };
 
 export default function TranscriptSign({
@@ -101,7 +103,7 @@ export default function TranscriptSign({
             }
 
             try {
-              const signed = signHash(hash, keys.privateKey);
+              const signed = signHash(hash, keys.privateKey, keys.publicKey);
               setSignedHash(signed);
               onSign(signed, keys.publicKey);
             } catch (err) {

@@ -34,11 +34,10 @@ const studentSchema = new Schema({
       },
       grade: {
         type: String,
-        enum: ["A", "B", "C", "D", "E"],
         required: true,
       },
       credit: {
-        type: Number,
+        type: String,
         required: true,
       },
     },
