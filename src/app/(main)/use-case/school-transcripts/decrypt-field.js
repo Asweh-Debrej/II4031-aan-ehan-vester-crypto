@@ -13,8 +13,6 @@ const fieldsToDecrypt = ["name", "courses", "gpa", "hash"];
 const decryptRC4 = (message, key) => {
   const stringified = fromBase64(message);
   const decrypted = decrypt(stringified, key);
-  console.log("decrypted", stringified, "           using key", key, "           result is ", decrypted);
-  // console.log("from base64", message, "           result is ", stringified);
   return decrypted;
 };
 
@@ -42,7 +40,6 @@ export default function DecryptField({
   studentData = null,
   onDecrypt = (data) => {},
 }) {
-  console.log("studentData", studentData);
   const [key, setKey] = useState("");
   const [decrypted, setDecrypted] = useState(null);
 
