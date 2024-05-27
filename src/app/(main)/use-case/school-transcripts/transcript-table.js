@@ -111,21 +111,21 @@ export default function TranscriptTable({
           <p className="w-[200px] break-all break-words">{student.nim}</p>
         </TableCell>
         <TableCell key={`name`}>
-          <p className="w-[200px]">{student.name}</p>
+          <p className="w-[200px] break-all break-words">{student.name}</p>
         </TableCell>
         {[...Array(10)].map((_, i) => {
           const course = student.courses[i];
           return [
-            <TableCell key={`courses[${i}].code`}>
+            <TableCell key={`courses[${i}].code`} className="break-all break-words">
               {course?.code || "-"}
             </TableCell>,
-            <TableCell key={`courses[${i}].name`}>
+            <TableCell key={`courses[${i}].name`} className="break-all break-words">
               <p className="w-[200px]">{course?.name || "-"}</p>
             </TableCell>,
-            <TableCell key={`courses[${i}].grade`}>
+            <TableCell key={`courses[${i}].grade`} className="break-all break-words">
               {course?.grade || "-"}
             </TableCell>,
-            <TableCell key={`courses[${i}].credit`}>
+            <TableCell key={`courses[${i}].credit`} className="break-all break-words">
               {course?.credit || "-"}
             </TableCell>,
           ];

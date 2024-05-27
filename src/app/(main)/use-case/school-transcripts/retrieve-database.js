@@ -121,6 +121,9 @@ export default function RetrieveDatabase({
           onOptionsChange({ ...filterOptions.current, page })
         }
       />
+      <p className="text-warning font-bold">
+        {`To improve readability, we hide hash and public keys in the table above. However, they are stored in the database.`}
+      </p>
       <div className="flex flex-row gap-4 items-center ml-auto">
         <p>You can also load data from step 1.4</p>
         <Button

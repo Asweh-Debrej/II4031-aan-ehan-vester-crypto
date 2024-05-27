@@ -84,6 +84,9 @@ export default function SubmitDatabase({ encryptedData = null }) {
       <Spacer y={4} />
       <p>{`The data stored in the database will look like below`}</p>
       <TranscriptTable data={databaseData} isLoading={isSubmitting} />
+      <p className="text-warning font-bold">
+        {`To improve readability, we hide hash and public keys in the table above. However, they are stored in the database.`}
+      </p>
     </div>
   );
 }
