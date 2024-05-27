@@ -89,10 +89,10 @@ export default function TranscriptSign({
               return;
             }
 
-            console.log("rsaData aan", rsaData);
+            let keys;
 
             try {
-              const keys = generateKeys(rsaData.p, rsaData.q);
+              keys = generateKeys(rsaData.p, rsaData.q);
               setRsaData({ ...rsaData, ...keys });
 
             } catch (err) {
@@ -101,9 +101,9 @@ export default function TranscriptSign({
             }
 
             try {
-              const signed = signHash(hash, rsaData.privateKey);
+              const signed = signHash(hash, keys.privateKey);
               setSignedHash(signed);
-              onSign(signed, rsaData.publicKey);
+              onSign(signed, keys.publicKey);
             } catch (err) {
               console.error(err);
               if (err instanceof InputError) {
@@ -164,8 +164,8 @@ export default function TranscriptSign({
         />
       </div>
       <div className="flex flex-row gap-4 items-center w-full">
-        <p className="mr-8 w-[280px]">{`Signed Hash (using RSA): `}</p>
-        <p className="font-bold break-all break-words">{signedHash}</p>
+        <p className="mr-8 w-min-[280px] w-[280px]">{`Signed Hash (using RSA): `}</p>
+        <p className="flex-1 font-bold break-all break-words">{signedHash}</p>
       </div>
     </div>
   );
