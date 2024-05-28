@@ -33,7 +33,7 @@ export default function GeneratePDF({ student }) {
     let totalSKS = 0;
     const uhuy = Array.isArray(student.courses)
       ? student.courses.map((course) => {
-          totalSKS += course.credit;
+          totalSKS += Number(course.credit);
         })
       : {};
 
