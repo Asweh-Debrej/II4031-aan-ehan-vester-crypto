@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 
 import { Input, Button } from "@nextui-org/react";
 
-import { keccak256 } from "js-sha3";
+import { hash } from "@/lib/cipher/sha3";
 import { decrypt as rsaDecrypt } from "@/lib/cipher/rsa";
 
 import { fromBase64 } from "js-base64";
@@ -13,7 +13,7 @@ const fieldsToHash = ["nim", "name", "courses"];
 const courseFieldsToHash = ["code", "name", "grade", "credit"];
 
 const SHA3 = (message) => {
-  const hashedMessage = keccak256(message);
+  const hashedMessage = hash(message);
   return hashedMessage;
 };
 
