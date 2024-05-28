@@ -4,6 +4,7 @@ export default function About() {
   const members = [
     { name: 'Muhamad Farhan Syakir', id: 18221145 },
     { name: 'Silvester Kresna W. P. P.', id: 18221049 },
+    { name: 'Rayhan Nugraha Putra', id: 18221149}
   ];
 
   const githubRepoLink = 'https://github.com/Asweh-Debrej/T1-II4031-Kripto';
