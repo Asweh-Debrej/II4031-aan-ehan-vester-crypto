@@ -53,28 +53,33 @@ Beberapa karakter UTF-8 tidak bisa disalin ke *clipboard* sehingga penggunaan Ba
     │   └───(main)
     │       ├───about
     │       ├───cipher
-    │       │   ├───affine
-    │       │   ├───playfair
-    │       │   ├───product
-    │       │   ├───rc4
-    │       │   ├───rsa
-    │       │   │   └───page.js <============= new
-    │       │   ├───rsa-test
-    │       │   ├───vigenere
-    │       │   ├───vigenere-auto-key
-    │       │   └───vigenere-ext
     │       └───home
+    │───use-case
+    │  └───school-transcripts
+    │       └───page.js                             // menampilkan komponen transcript-form
+    │       └───transcript-form.js          // menampilkan komponen step 1 hingga step 7
+    │       └───transcript-table.js          // komponen tabel
+    │       └───transcript-input.js         // komponen step 1.1 Create Transcript Data
+    │       └───transcript-hash.js          // komponen step 1.2 Create Hash (Automated)
+    │       └───transcript-sign.js           // komponen step 1.3 Sign your Hash
+    │       └───encrypt-field.js               // komponen step 1.4 Encrypt Each Field
+    │       └───submit-database.js        // komponen step 2 Submit Data to Database
+    │       └───retrieve-database.js       // komponen step 3 Retrieve Data from Database
+    │       └───decrypt-field.js               // komponen step 4 Decrypt your Data
+    │       └───hash-validate.js              // komponen step 5 Validate Hash
+    │       └───download-transcript.js  // komponen step 6 Download your Transcript
+    │       └───decrypt-transcript.js     // komponen step 7 Decrypt your Transcript
     ├───components
     │   └───cipher
     │       └───form
-    │           └───rsa.js <================= new
     └───lib
         ├───cipher
-        │   └───rsa.js <===================== new
+        │   └───rc4.js
+        │   └───rsa.js
         ├───error
         ├───store
         └───utils
-              └───cipher.js <================ updated
+              └───cipher.js 
 ````
 
 Algoritma ciphers terdapat pada ./src/lib/cipher
@@ -84,3 +89,4 @@ Algoritma ciphers terdapat pada ./src/lib/cipher
 |   ---   |   ---   |
 | Muhammad Farhan Syakir   |   18221145   |
 | Silvester Kresna W. P. P.   |   18221049   |
+| Rayhan Nugraha Putra   |   18221149   |
