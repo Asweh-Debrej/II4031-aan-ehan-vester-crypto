@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 
 import { Input, Button } from "@nextui-org/react";
 import TranscriptTable from "./transcript-table";
-import { keccak256 } from "js-sha3";
+import { hash } from "@/lib/cipher/sha3";
 
 const SHA3 = (message) => {
-  const hashedMessage = keccak256(message);
+  const hashedMessage = hash(message);
   return hashedMessage;
 };
 

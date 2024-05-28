@@ -1,131 +1,139 @@
-// manual SHA3-256 implementation
-
-// Keccak constants
-const b = 1600;
-const w = b / 25;
-const nr = 24;
-const ir = 1152;
-const orc = 0x1f;
-
-// SHA3-256 constants
-const c = 512;
-const d = 256;
-const r = 1088;
-
-// SHA3-256 round constants
-const rc = [
-  0x0000000000000001n,
-  0x0000000000008082n,
-  0x800000000000808an,
-  0x8000000080008000n,
-  0x000000000000808bn,
-  0x0000000080000001n,
-  0x8000000080008081n,
-  0x8000000000008009n,
-  0x000000000000008an,
-  0x0000000000000088n,
-  0x0000000080008009n,
-  0x000000008000000an,
-  0x000000008000808bn,
-  0x800000000000008bn,
-  0x8000000000008089n,
-  0x8000000000008003n,
-  0x8000000000008002n,
-  0x8000000000000080n,
-  0x000000000000800an,
-  0x800000008000000an,
-  0x8000000080008081n,
-  0x8000000000008080n,
-  0x0000000080000001n,
-  0x8000000080008008n,
+const KECCAK_ROUNDS = 24;
+const KECCAK_RC = [
+  0x00000001, 0x00008082, 0x0000808a, 0x80008000, 0x0000808b, 0x80000001,
+  0x80008081, 0x00008009, 0x0000008a, 0x00000088, 0x80008009, 0x8000000a,
+  0x8000808b, 0x0000008b, 0x00008089, 0x00008003, 0x00008002, 0x00000080,
+  0x0000800a, 0x8000000a, 0x80008081, 0x00008080, 0x80000001, 0x80008008,
 ];
 
-// SHA3-256 round function
-function keccak_f(state) {
-  console.log("state: ", state);
-  let round = 0;
-  while (round < nr) {
-    // theta
-    let C = new Array(w).fill(0n);
-    let D = new Array(w).fill(0n);
-    for (let x = 0; x < 5; x++) {
-      for (let y = 0; y < w; y++) {
-        // console.log("typeof state[x * 5 + y]: ", typeof state[x * 5 + y]);
-        // console.log("state[x * 5 + y]: ", state[x * 5 + y]);
-        // console.log("typeof C[y]: ", typeof C[y]);
-        // console.log("C[y]: ", C[y]);
-        C[y] ^= state[x * 5 + y];
-      }
-    }
-    for (let x = 0; x < 5; x++) {
-      for (let y = 0; y < w; y++) {
-        D[y] = C[(y + 4) % w] ^ ((C[(y + 1) % w] << 1n) | (C[(y + 1) % w] >> (w - 1n)));
-      }
-      for (let y = 0; y < w; y++) {
-        for (let x = 0; x < 5; x++) {
-          state[x * 5 + y] ^= D[y];
-        }
-      }
-    }
+const ROTL = (x, y) => {
+  return (x << y) | (x >>> (32 - y));
+};
 
-    // rho and pi
-    let x = 1;
-    let y = 0;
-    let current = state[x * 5 + y];
-    for (let t = 0; t < 24; t++) {
-      let next = state[y * 5 + ((2 * x + 3 * y) % 5)];
-      state[y * 5 + ((2 * x + 3 * y) % 5)] = ((current << (((t + 1n) * (t + 2n)) / 2n)) | (current >> (64n - ((t + 1n) * (t + 2n)) / 2n))) ^ rc[t];
-      current = next;
-      [x, y] = [y, (2 * x + 3 * y) % 5];
-    }
+const keccakPad = (M, r) => {
+  const q = r - (M.length % r);
+  if (q === 1) {
+    return M.concat([0x81]);
+  }
+  return M.concat([0x01])
+    .concat(new Array(q - 2).fill(0))
+    .concat([0x80]);
+};
 
-    // chi
+const keccakTheta = (A) => {
+  const C = new Array(5);
+  const D = new Array(5);
+
+  for (let x = 0; x < 5; x++) {
+    C[x] = A[x] ^ A[x + 5] ^ A[x + 10] ^ A[x + 15] ^ A[x + 20];
+  }
+
+  for (let x = 0; x < 5; x++) {
+    D[x] = C[(x + 4) % 5] ^ ROTL(C[(x + 1) % 5], 1);
+  }
+
+  for (let x = 0; x < 5; x++) {
     for (let y = 0; y < 5; y++) {
-      let T = new Array(5);
-      for (let x = 0; x < 5; x++) {
-        T[x] = state[x * 5 + y];
-      }
-      for (let x = 0; x < 5; x++) {
-        state[x * 5 + y] = T[x] ^ (~T[(x + 1) % 5] & T[(x + 2) % 5]);
-      }
+      A[x + 5 * y] ^= D[x];
+    }
+  }
+};
+
+const keccakRho = (A) => {
+  const RHO_OFFSETS = [
+    0, 1, 62, 28, 27, 36, 44, 6, 55, 20, 3, 10, 43, 25, 39, 41, 45, 15, 21, 8,
+    18, 2, 61, 56, 14,
+  ];
+
+  for (let i = 0; i < 25; i++) {
+    A[i] = ROTL(A[i], RHO_OFFSETS[i]);
+  }
+};
+
+const keccakPi = (A) => {
+  const B = new Array(25);
+
+  for (let x = 0; x < 5; x++) {
+    for (let y = 0; y < 5; y++) {
+      B[y + 5 * ((2 * x + 3 * y) % 5)] = A[x + 5 * y];
+    }
+  }
+
+  for (let i = 0; i < 25; i++) {
+    A[i] = B[i];
+  }
+};
+
+const keccakChi = (A) => {
+  const B = new Array(25);
+
+  for (let x = 0; x < 5; x++) {
+    for (let y = 0; y < 5; y++) {
+      B[x + 5 * y] =
+        A[x + 5 * y] ^ (~A[((x + 1) % 5) + 5 * y] & A[((x + 2) % 5) + 5 * y]);
+    }
+  }
+
+  for (let i = 0; i < 25; i++) {
+    A[i] = B[i];
+  }
+};
+
+const keccakIota = (A, round) => {
+  A[0] ^= KECCAK_RC[round];
+};
+
+const keccakF1600 = (A) => {
+  for (let round = 0; round < KECCAK_ROUNDS; round++) {
+    keccakTheta(A);
+    keccakRho(A);
+    keccakPi(A);
+    keccakChi(A);
+    keccakIota(A, round);
+  }
+};
+
+export const hash = (message, outputLength = 256) => {
+  const r = 1600 - 2 * outputLength;
+  let M = message.split("").map((c) => c.charCodeAt(0));
+
+  M = keccakPad(M, r);
+
+  const state = new Array(25).fill(0);
+
+  for (let i = 0; i < M.length; i += r) {
+    for (let j = 0; j < r; j += 8) {
+      state[j / 8] ^=
+        M[i + j] |
+        (M[i + j + 1] << 8) |
+        (M[i + j + 2] << 16) |
+        (M[i + j + 3] << 24) |
+        (M[i + j + 4] << 32) |
+        (M[i + j + 5] << 40) |
+        (M[i + j + 6] << 48) |
+        (M[i + j + 7] << 56);
     }
 
-    // iota
-    state[0] ^= rc[round];
-    round++;
+    keccakF1600(state);
   }
 
-  return state;
-}
-
-// SHA3-256 permutation
-function sha3_256(message) {
-  // pad message
-  message = message.concat([0x06]);
-  while (message.length % r) {
-    message.push(0x00);
+  const res = [];
+  for (let i = 0; res.length < outputLength / 8; i++) {
+    const t = state[i % 25];
+    res.push(
+      t & 0xff,
+      (t >> 8) & 0xff,
+      (t >> 16) & 0xff,
+      (t >> 24) & 0xff,
+      (t >> 32) & 0xff,
+      (t >> 40) & 0xff,
+      (t >> 48) & 0xff,
+      (t >> 56) & 0xff
+    );
   }
 
-  // initialize state
-  let state = new Array(b / w).fill(0n);
-
-  // absorb
-  for (let i = 0; i < message.length; i += r) {
-    for (let j = 0; j < r / w; j++) {
-    //   console.log("state[j]: ", state[j]);
-    //   console.log("w: ", w);
-    //   console.log("typeof w: ", typeof w);
-    //   console.log("message[i + j]: ", BigInt(message[i + j]));
-      state[j] ^= BigInt.asUintN(w, BigInt(message[i + j]));
-    }
-    state = keccak_f(state);
-  }
-
-  // squeeze
-  let hash = [];
-  for (let i = 0; i < d / w; i++) {
-    hash.push(Number(state[i]));
-  }
-
-  return hash;
-}
+  return res
+    .slice(0, outputLength / 8)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+};
