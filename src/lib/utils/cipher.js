@@ -120,7 +120,7 @@ export const studentToGPA = (student) => {
   student.courses.forEach((course) => {
     let gradePoint = gradeToPoint[course.grade];
     totalGradePoints += gradePoint * Number(course.credit);
-    totalCredits += course.credit;
+    totalCredits += Number(course.credit);
   });
 
   let gpa = totalGradePoints / totalCredits;
@@ -131,7 +131,7 @@ export const totalCredit = (student) => {
   let totalCredits = 0;
 
   student.courses.forEach((course) => {
-    totalCredits += course.credit;
+    totalCredits += Number(course.credit);
   });
   return totalCredits;
 };
